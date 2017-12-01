@@ -1,0 +1,27 @@
+{
+  "name": "jmt",
+  "version": "1.0.0",
+  "description": "GSW Junior School Math Tournament",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gswcm/jmt.git"
+  },
+  "keywords": [
+    "GSW",
+    "jmt",
+    "Junior",
+    "School",
+    "Math",
+    "Tournament"
+  ],
+  "author": "Simon Baev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gswcm/jmt/issues"
+  },
+  "homepage": "https://github.com/gswcm/jmt#readme"
+}
