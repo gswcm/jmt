@@ -1,0 +1,7 @@
+const SET_IS_ADMIN = 'SET_IS_ADMIN';
+const SET_EMAIL_VALUE = 'SET_EMAIL_VALUE';
+
+export default {
+	SET_IS_ADMIN,
+	SET_EMAIL_VALUE,
+};
