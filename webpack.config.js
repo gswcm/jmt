@@ -8,7 +8,7 @@ const webpack = require('webpack');
 const parts = require("./webpack.parts");
 
 const PATHS = {
-	app: path.join(__dirname, "app"),
+	app: path.join(__dirname, "frontend"),
 	build: path.join(__dirname, "build")
 };
 

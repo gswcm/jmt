@@ -1,0 +1,33 @@
+extends layout
+
+block head
+	link(rel='stylesheet', href='/css/about.css')
+
+block content	
+	include navbar
+	.container-fluid.main
+		.d-flex.justify-content-center.my-5
+			h1 About		
+		.row.mt-0
+			.col-4.col-md-3.left.d-flex.justify-content-end
+				h3 History
+			.col.ml-3.text-justify
+				p Every year, from 1974 through 2017, the Department of Mathematics at Georgia Southwestern has hosted a tournament for high school students from throughout the state. This tournament has brought hundreds of students to the campus in the early spring each year to compete with one another. The longest running math tournament in Georgia, the annual GSW competition has served as a model for a host of imitators. Teachers from across the state would select a minimum of four and a maximum of eight outstanding mathematics students from each school to participate. (Extra students are welcome to participate and enjoy the tournament, but only the team-of-eight will contribute to the official score for the school's team).
+				p To honor the contribution of Dr. Jay Cliett and Dr. Bill Kipp, the tournament will be named as "the Jay Cliett and Bill Kipp High School Mathematics Tournament" from 2018.  	
+		.row.mt-0
+			.col-4.col-md-3.left.d-flex.justify-content-end
+				h3 This year
+			.col.ml-3.text-justify
+				p The math tournament will be  held on Friday, #[b February 9, 2018] in the GSW Student Success Center. If you have any questions, please contact #[a(href='mailto:mtourney@gsw.edu') Dr. Kailash Ghimire] by email #[a(href='mailto:mtourney@gsw.edu') mtourney@gsw.edu] or by phone #[a(href='tel:+112299317350') (229) 931-7350]. 
+				p Stay tuned! Meanwhile, take a look at exams and results from recent years.
+		.row.mt-0
+			.col-4.col-md-3.left.d-flex.justify-content-end
+				h3 Passed years
+			.col.ml-3
+				h4 Statistics
+				.cotainer
+					a(href="/stats/2016/index.html", target="_blank") 2016
+					| ,&nbsp;
+					| #[a(href="/stats/2017/index.html", target="_blank") 2017]. 
+				h4 Exams
+				.container

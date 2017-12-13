@@ -1,0 +1,10 @@
+extends layout
+
+block head
+	meta(http-equiv="refresh", content="5;url=/")
+
+block content
+	.container.mt-5
+		h1= message
+		h2= error.status
+		pre #{error.stack}

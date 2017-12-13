@@ -1,0 +1,17 @@
+doctype html
+html
+	head
+		link(rel='stylesheet', href='css/email.css', data-inline)
+	body
+		.container.column
+			.card.p-3.mx-auto.my-3
+				img.logo(src="logo_small.png").ml-auto.d-block
+				hr.red
+				h3.mb-3 Hello,
+				p.text-justify You or someone else on your behalf has initiated #[strong password recovery]. 
+				p.text-justify Follow #[a.text-info(href=`${url}`) this link] to setup a new password.
+				p Thank you.
+				p.signature
+					| --
+					| #[br]
+					| HMT Mailing Robot
