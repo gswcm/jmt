@@ -10,7 +10,7 @@ const smtpConfig = {
 			{
 				type: 'rotating-file',
 				level: 'info',
-				path: 'logs/mailer.log',
+				path: 'backend/logs/mailer.log',
 				period: '1d', // daily rotation
 				count: 7 // keep 3 back copies
 			},
@@ -26,8 +26,8 @@ const smtpConfig = {
 };
 
 const defaultMailingOptions = {
-	from: 'HMT Mailing Robot <noreply@hmt.gswcm.net>',
-	replyTo: 'noreply@hmt.gswcm.net'
+	from: 'JMT Mailing Robot <noreply@jmt.gswcm.net>',
+	replyTo: 'noreply@jmt.gswcm.net'
 };
 
 const smtpTransport = nodemailer.createTransport(smtpConfig, defaultMailingOptions);
@@ -36,7 +36,7 @@ const base64ToS3_options = {
 		accessKeyId: process.env.S3_KEY,
 		secretAccessKey: process.env.S3_SECRET,
 		params: {
-			Bucket: 'hmt.gswcm.net'
+			Bucket: 'jmt.gswcm.net'
 		}
 	}
 };

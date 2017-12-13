@@ -27,8 +27,6 @@ mongoose.connection
 	var port = normalizePort(process.env.PORT || '4000');
 	app.set('port', port);
 	var server = http.createServer(app);
-	app.get('socketio').listen(server);
-	//-- Required for Socket.io support
 	server.listen(port);
 	server.on('error', onServerError);
 	server.on('listening', function(){

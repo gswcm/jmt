@@ -2,7 +2,7 @@
 	"name": "jmt",
 	"version": "1.0.0",
 	"description": "GSW Junior School Math Tournament",
-	"main": "index.js",
+	"main": "bin/www.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --env development\"",

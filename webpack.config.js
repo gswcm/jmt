@@ -110,12 +110,6 @@ const productionConfig = merge([
 			minChunks: Infinity
 		}
 	]),
-	// {
-	// 	performance: {
-	// 		hints: "warning",
-	// 		maxAssetSize: 450000
-	// 	},
-	// },
 	{ 
 		output: {
 			chunkFilename: '[name].[chunkhash:8].js',
