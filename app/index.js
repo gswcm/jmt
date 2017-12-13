@@ -2,7 +2,6 @@
 import './assets/favicon.ico';
 import './assets/robots.txt';
 import './assets/sitemap.xml';
-import './assets/logo.png';
 //-- Dependences 
 import vue from "vue";
 import vueRouter from "vue-router";

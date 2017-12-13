@@ -4,18 +4,20 @@
 			<b-col cols="12" lg="10" xl="8">
 				<b-card
 					bg-variant="transparent"
-					class="border-0"
-					title="Welcome"
-					img-src="logo.png"
-					sub-title="Thank you for using our registration portal">
-					<p class="card-text mt-3 text-justify">
-						This portal is designed to support registration of School team(s) and individual students for the upcoming Junior Math Tournamnet. Start the process by clicking the button below, and have in mind that you will always be able to revise the registration by visiting this application again while using the same e-mail address. 
-					</p>
-					<hr>
-					<p v-if="showStat" class="text-center">
-						So far we received registrations from <span class="text-danger">{{summary.numTeams}} teams</span> bringing <span class="text-danger">{{summary.numStudents}} students</span>.
-					</p>
-					<b-btn variant="primary" to="/start" class="d-block">Let's Get Started</b-btn>
+					class="border-0">
+					<img src="../logo.png" class="card-img card-img-top img-fluid" />					
+					<b-card-body
+						title="Welcome"
+						sub-title="Thank you for using our registration portal">
+						<p class="card-text mt-3 text-justify">
+							This portal is designed to support registration of School team(s) and individual students for the upcoming Junior Math Tournamnet. Start the process by clicking the button below, and have in mind that you will always be able to revise the registration by visiting this application again while using the same e-mail address. 
+						</p>
+						<hr>
+						<p v-if="showStat" class="text-center">
+							So far we received registrations from <span class="text-danger">{{summary.numTeams}} teams</span> bringing <span class="text-danger">{{summary.numStudents}} students</span>.
+						</p>
+						<b-btn variant="success" to="/start" class="d-block">Let's Get Started</b-btn>
+					</b-card-body>
 				</b-card>
 			</b-col>
 		</b-row> 

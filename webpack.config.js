@@ -64,7 +64,11 @@ const commonConfig = merge([
 			new webpack.NamedModulesPlugin()
 		]
 	},
-	parts.loadFonts(),
+	parts.loadFonts({
+		options: {
+			name: "./fonts/[name].[hash:8].[ext]"
+		}
+	}),
 	parts.loadAssets(),
 	parts.loadVue()
 ]);
@@ -90,12 +94,12 @@ const productionConfig = merge([
 	parts.extractCSS({
 		use: ["css-loader", parts.autoprefix(), "sass-loader"]
 	}),
-	// parts.loadImages({
-	// 	options: {
-	// 		limit: 2000,
-	// 		name: "[name].[hash:8].[ext]"
-	// 	}
-	// }),
+	parts.loadImages({
+		options: {
+			limit: 2000,
+			name: "./images/[name].[hash:8].[ext]"
+		}
+	}),
 	parts.extractBundles([
 		{
 			name: "vendor",
@@ -134,7 +138,7 @@ const developmentConfig = merge([
 		port: process.env.PORT
 	}),
 	parts.loadCSS(),
-	// parts.loadImages()
+	parts.loadImages()
 ]);
 
 module.exports = env => {

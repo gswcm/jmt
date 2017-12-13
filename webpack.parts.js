@@ -27,7 +27,7 @@ exports.devServer = ({ host, port } = {}) => ({
 });
 
 //-- Font loader
-exports.loadFonts = ({ include, exclude } = {}) => ({
+exports.loadFonts = ({ include, exclude, options } = {}) => ({
 	module: {
 		rules: [
 			{
@@ -35,9 +35,7 @@ exports.loadFonts = ({ include, exclude } = {}) => ({
 				include,
 				exclude,
 				loader: "file-loader",
-				options: {
-					name: "[name].[hash:8].[ext]"
-				}
+				options
 			}
 		]
 	}
