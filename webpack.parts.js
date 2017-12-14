@@ -1,3 +1,4 @@
+const path = require("path");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const webpack = require('webpack');
 const UglifyWebpackPlugin = require('uglifyjs-webpack-plugin');
@@ -17,6 +18,7 @@ exports.devServer = ({ host, port } = {}) => ({
 		overlay: true,
 		stats: "errors-only",
 		historyApiFallback: true,
+		contentBase: path.join(__dirname, "build"),
 		proxy: {
 			'/api': 'http://localhost:4000',
 			'/about': 'http://localhost:4000'
@@ -59,7 +61,7 @@ exports.loadCSS = ({ include, exclude } = {}) => ({
 exports.extractCSS = ({ include, exclude, use }) => {
 	const plugin = new ExtractTextPlugin({
 		allChunks: true,
-		filename: "[name].[contenthash:8].css"
+		filename: "[name].css"
 	});
 	return {
 		module: {

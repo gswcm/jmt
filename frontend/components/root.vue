@@ -3,11 +3,6 @@
 		<b-navbar sticky toggleable="md" type="dark" variant="dark">
 			<b-nav-toggle target="nav_collapse"></b-nav-toggle>
 			<b-navbar-brand to="/">
-				<!-- <span class="d-none d-md-inline-block">
-					The Jay Cliett and Bill Kipp 
-					<br class="my-0 d-inline-block d-lg-none"/>
-					<small>GSW Junior School Mathematics Tournament 2018 @ GSW</small>
-				</span> -->
 				<span class="d-inline-block">
 					Junior Math Tournament <br class="d-sm-none"/> 2018 @ GSW
 				</span>

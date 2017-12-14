@@ -81,7 +81,7 @@ const productionConfig = merge([
 	parts.cleanup(PATHS.build),
 	parts.minifyJavaScript(
 		{
-			sourceMap: true,
+			sourceMap: false,
 			parallel: true,
 		}
 	),
@@ -92,7 +92,11 @@ const productionConfig = merge([
 		safe: true
 	}),
 	parts.extractCSS({
-		use: ["css-loader", parts.autoprefix(), "sass-loader"]
+		use: ["css-loader", parts.autoprefix(), "sass-loader"],
+		exclude: [
+			/assets\//,
+			/\.png$/
+		]
 	}),
 	parts.loadImages({
 		options: {
@@ -131,7 +135,12 @@ const developmentConfig = merge([
 		host: process.env.HOST,
 		port: process.env.PORT
 	}),
-	parts.loadCSS(),
+	parts.loadCSS({
+		exclude: [
+			/assets\//,
+			/\.png$/
+		]
+	}),
 	parts.loadImages()
 ]);
 

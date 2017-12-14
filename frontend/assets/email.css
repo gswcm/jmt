@@ -1,0 +1,68 @@
+body, html  {
+	height: 100%;
+}
+.container {
+	background-color: rgb(44, 54, 67);
+	font-family: "Roboto", "Helvetica Neue", "Arial", "sans-serif";
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	padding: 1em;
+}
+.logo {
+	height: 100px;
+}
+.card {
+	display: block;
+	max-width: 600px;
+	background-color: #eee;
+}
+hr {
+	border-top: 3px solid rgb(0, 174, 239);
+}
+hr.red {
+	border-top: 3px solid red;
+}
+.column {
+	height: 100%;
+}
+.column-500 {
+	min-height: 500px;
+	height: 100%;
+}
+.text-justify {
+	text-align: justify!important;
+}
+a {
+	text-decoration: none;
+}
+.p-3 {
+	padding: 1em;
+}
+.mb-3 {
+	margin-bottom: 1em;
+}
+.mt-3 {
+	margin-top: 1em;
+}
+.my-3 {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.text-info {
+	color: rgb(71,160,181)
+}
+.d-block {
+	display: block;
+}
+.ml-auto {
+	margin-left: auto;
+}
+.mx-auto {
+	margin-left: auto;
+	margin-right: auto;
+}
+.signature {
+	font-size: 0.75rem;
+	color: #aaa;
+}
