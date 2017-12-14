@@ -93,10 +93,7 @@ const productionConfig = merge([
 	}),
 	parts.extractCSS({
 		use: ["css-loader", parts.autoprefix(), "sass-loader"],
-		exclude: [
-			/assets\//,
-			/\.png$/
-		]
+		exclude: /assets\//
 	}),
 	parts.loadImages({
 		options: {
@@ -136,10 +133,7 @@ const developmentConfig = merge([
 		port: process.env.PORT
 	}),
 	parts.loadCSS({
-		exclude: [
-			/assets\//,
-			/\.png$/
-		]
+		exclude: /assets\//,
 	}),
 	parts.loadImages()
 ]);
