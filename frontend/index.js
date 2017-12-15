@@ -1,10 +1,10 @@
 //-- Root assets
-import './assets/favicon.ico';
-import './assets/robots.txt';
-import './assets/sitemap.xml';
-import './assets/about.css';
-import './assets/email.css';
-//-- Dependences 
+import "./assets/favicon.ico";
+import "./assets/robots.txt";
+import "./assets/sitemap.xml";
+import "./assets/about.css";
+import "./assets/email.css";
+//-- Dependences
 import vue from "vue";
 import vueRouter from "vue-router";
 import vueNoty from "vuejs-noty";
@@ -25,6 +25,11 @@ const router = new vueRouter({
 			path: "/",
 			component: () =>
 				import(/* webpackChunkName: "landing" */ "./components/landing.vue")
+		},
+		{
+			path: "/start",
+			component: () =>
+				import(/* webpackChunkName: "start" */ "./components/start.vue")
 		},
 		{
 			path: "*",
