@@ -147,10 +147,12 @@
 									name: '',
 									phone: ''
 								},
-								// team: {
-								// 	type: null,
-								// 	grades: []
-								// },
+								participants: {
+									registration: "school",
+									grades: [
+										{ type: null, qty: 1}
+									]
+								},
 								misc: {
 									meals: 0,
 									tshirts: []

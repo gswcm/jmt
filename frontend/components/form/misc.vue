@@ -5,7 +5,7 @@
 		</legend>
 		<div class="fieldset p-3 bg-light rounded">
 			<!-- T-Shirts -->
-			<b-row align-h="between" align-v="center"class="my-3" v-show="showTShirts">
+			<b-row align-h="between" align-v="center" class="my-3" v-show="showTShirts">
 				<b-col cols="auto">
 					<h5 class="text-info">T-Shirts <small>($10 each)</small> </h5>
 				</b-col>
@@ -29,7 +29,7 @@
 						<b-select
 							:disabled="ro"
 							:value="tshirt.size"
-							:state="tshirt.size ? null : false"
+							:state="tshirt.size !== null ? null : false"
 							@input="update(['tshirts',`${index}`],'size',$event)">
 							<option :value="null">Please select t-shirt size</option>
 							<option value="XS">XS</option>
@@ -44,6 +44,7 @@
 						<b-form-input 
 							:disabled="ro"
 							type="number" 
+							min="0"
 							:value="tshirt.qty"
 							@input="update(['tshirts',`${index}`],'qty',$event)"
 							:state="tshirt.qty > 0 ? null : false">
@@ -74,6 +75,7 @@
 						<b-form-input 
 							:disabled="ro"
 							type="number" 
+							min="0"
 							:value="runtime.value.meals"
 							:state="state(runtime.status.meals)"
 							@input="update([],'meals',$event)">
@@ -127,9 +129,9 @@
 			addTShirt() {
 				this.runtime.value.tshirts.push({
 					size: null,
-					qty: 0
+					qty: 1
 				});
-				this.runtime.status.tshirts = false;
+				this.runtime.status.tshirts = this.validate('tshirts');
 				this.update();
 			},
 			update(path = [], key, value) {
