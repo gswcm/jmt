@@ -43,6 +43,10 @@
 		<div v-if="(showForm && !isAdmin) || override">
 			<registration
 				:value="registration.value"
+				:options="{
+					debug: false,
+					ro: false,
+				}"
 				@input="update">
 			</registration>
 			<div class="text-justify border border-info rounded my-3 p-3">
@@ -68,7 +72,10 @@
 			registration
 		},
 		data: () => ({
-			registration: {},
+			registration: {
+				value: {},
+				status: false
+			},
 			showForm: false,
 			popupIndex: 0,
 			uuid: '',
@@ -140,14 +147,13 @@
 									name: '',
 									phone: ''
 								},
-								// school: {
-								// 	name: '',
-								// 	division: null
+								// team: {
+								// 	type: null,
+								// 	grades: []
 								// },
-								team: {
-									// names: ['',''],
+								misc: {
 									meals: 0,
-									// tshirts: []
+									tshirts: []
 								}
 							};
 							if(!user || !user.registration || !user.registration.main) {
@@ -194,6 +200,10 @@
 	.btn:focus {
 		outline: 0;
 		box-shadow: none;
+	}
+	.disabled,
+	:disabled {
+		cursor: not-allowed;
 	}
 </style>
 

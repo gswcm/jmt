@@ -6,25 +6,34 @@
 		</div>
 		<sponsor
 			:value="runtime.value.sponsor"
+			:ro="options.ro"
 			@input="update('sponsor', $event)">
 		</sponsor>
-		<team
-			:value="runtime.value.team"
-			@input="update('team', $event)">
-		</team>
+		<misc
+			:value="runtime.value.misc"
+			:ro="options.ro"
+			@input="update('misc', $event)">
+		</misc>
 	</div>
 </template>
 
 <script>
 	const _ = require('lodash');
 	import sponsor from './sponsor.vue';
-	import team from './team.vue';
+	import misc from './misc.vue';
 	export default {
 		components: {
-			sponsor, team
+			sponsor, misc
 		},
 		props: {			
 			value: Object,
+			options: {
+				type: Object,
+				default: () => ({
+					debug: false,
+					ro: false
+				})
+			}
 		},
 		data: () => ({
 			runtime: {
@@ -32,11 +41,6 @@
 				status: {}
 			},
 			status: false,
-			options: {
-				debug: true,
-				verbose: true,
-				ro: false
-			}
 		}),
 		created() {
 			this.runtime.value = _.cloneDeep(this.value);

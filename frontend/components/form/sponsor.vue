@@ -3,10 +3,6 @@
 		<legend :class="[status ? '' : 'text-danger']">
 			The Sponsor
 		</legend>
-		<div class="bg-light p-3 text-info border-info border" v-if="options.debug">
-			<pre>{{JSON.stringify(runtime,null,3)}}</pre>	
-			<pre>{{JSON.stringify(status,null,3)}}</pre>	
-		</div>
 		<div class="fieldset p-3 bg-light rounded">
 			<b-form-group 										
 				label-for="name"
@@ -18,27 +14,28 @@
 					<b-col col sm>
 						<b-form-input 
 							type="text" 
-							:disabled="options.ro"
+							:disabled="ro"
 							:state="state(runtime.status.name)"
 							:value="runtime.value.name"
-							@input="update('name',$event)"
+							@input="update([],'name',$event)"
 							placeholder="don't leave me empty">
 						</b-form-input>
 					</b-col>		
 				</b-row>
 			</b-form-group>
 			<b-form-group 										
-				label-for="phone">
-				<b-row align-v="center" v-show="!options.ro || (options.ro && runtime.value.phone.length > 0)">
+				label-for="phone"
+				v-show="!ro || (ro && runtime.value.phone.length > 0)">
+				<b-row align-v="center">
 					<b-col cols="12" sm="auto">
 						<label>Sponsor's phone number</label>
 					</b-col>
 					<b-col col sm>
 						<b-form-input 
 							type="tel" 
-							:disabled="options.ro"
+							:disabled="ro"
 							:value="runtime.value.phone"
-							@input="update('phone',$event)"
+							@input="update([],'phone',$event)"
 							placeholder="sponsor's phone number">
 						</b-form-input>
 					</b-col>
@@ -53,6 +50,10 @@
 	export default {
 		props: {			
 			value: Object,
+			ro: {
+				type: Boolean,
+				default: false
+			}
 		},
 		data: () => ({
 			runtime: {
@@ -60,11 +61,6 @@
 				status: {}
 			},
 			status: false,
-			options: {
-				debug: false,
-				verbose: true,
-				ro: false
-			}
 		}),
 		created() {
 			this.runtime.value = _.cloneDeep(this.value);
@@ -74,10 +70,11 @@
 			this.update();
 		},
 		methods: {
-			update(key, value) {
-				if(key) { 
-					this.runtime.value[key] = _.cloneDeep(value);
-					this.runtime.status[key] = this.validate(key);
+			update(path = [], key, value) {
+				let query = [...path, key][0];
+				if(query) { 
+					path.reduce((target,key) => target[key],this.runtime.value)[key] = value;
+					this.runtime.status[query] = this.validate(query)
 				}
 				this.status = Object.keys(this.runtime.status).reduce((a,i) => a && this.runtime.status[i], true);
 				this.$emit('input', {
@@ -85,12 +82,16 @@
 					status: this.status
 				});
 			},
-			validate(key) {
-				switch (key) {
-					case "name": return /^[a-zA-Z0-9 '.,-]+$/.test(this.runtime.value[key]);
-					case "phone": return true;
+			validate(query) {
+				let subj = this.runtime.value[query];
+				switch (query) {
+					case "name":
+						return /^[a-zA-Z0-9 '.,-]+$/.test(subj); 
+					case "phone":
+						return true;
 				}
 			},
+
 			state(isValid) {
 				return isValid ? null : false;
 			},
@@ -104,6 +105,10 @@
 	.btn:focus {
 		outline: 0;
 		box-shadow: none;
+	}
+	.disabled,
+	:disabled {
+		cursor: not-allowed;
 	}
 </style>
 
