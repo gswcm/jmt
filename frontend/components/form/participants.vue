@@ -16,18 +16,20 @@
 					<b-form-radio value="individual">Individual ($20 per person)</b-form-radio>
 				</b-form-radio-group>
 			</b-form-group>
-			<p v-if="!ro && runtime.value.registration === 'school'" class="mt-3 pl-3 border border-bottom-0 border-top-0 border-right-0 border-dark">
-				<strong>Note</strong>: The registration cost per school team is calculated based on the payment date:
-				<ul>
-					<li>
-						If paid <strong>before February 10<span class="superscript">th</span>, 2018</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
-					</li>
-					<li>
-						If paid <strong>after February 10<span class="superscript">th</span>, 2018</strong> the cost is <strong>$75</strong>
-					</li>
-				</ul>
-				The <strong>Total</strong> below shows both cases.
-			</p>
+			<transition name="flipInX">
+				<p v-if="!ro && runtime.value.registration === 'school'" class="mt-3 pl-3 border border-bottom-0 border-top-0 border-right-0 border-dark">
+					<strong>Note</strong>: The registration cost per school team is calculated based on the payment date:
+					<ul>
+						<li>
+							If paid <strong>before February 10<span class="superscript">th</span>, 2018</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
+						</li>
+						<li>
+							If paid <strong>after February 10<span class="superscript">th</span>, 2018</strong> the cost is <strong>$75</strong>
+						</li>
+					</ul>
+					The <strong>Total</strong> below shows both cases.
+				</p>
+			</transition>
 			<hr class="my-4">
 			<!-- Grades -->
 			<b-row align-h="between" align-v="center" class="my-3">
@@ -94,6 +96,7 @@
 </template>
 
 <script>
+import "vue-animate-transitions/dist/vue-animate-transitions.min.css";
 const _ = require("lodash");
 export default {
 	props: {
@@ -109,11 +112,6 @@ export default {
 			status: {}
 		},
 		status: false,
-		selected: "individual",
-		options: [
-        { text: 'School (see the note below', value: 'school' },
-        { text: 'Individual ($20 per person)', value: 'individual' },
-      ]
 	}),
 	created() {
 		this.runtime.value = _.cloneDeep(this.value);
@@ -169,18 +167,26 @@ export default {
 </script>
 
 <style>
-.form-control:focus,
-.form-control.is-invalid:focus,
-.btn:focus {
-	outline: 0;
-	box-shadow: none;
-}
-.disabled,
-:disabled {
-	cursor: not-allowed;
-}
-.superscript {
-	vertical-align: super;
-}
+	.form-control:focus,
+	.form-control.is-invalid:focus,
+	.btn:focus {
+		outline: 0;
+		box-shadow: none;
+	}
+	.disabled,
+	:disabled {
+		cursor: not-allowed;
+	}
+	.superscript {
+		vertical-align: super;
+	}
+	.fade-enter-active, 
+	.fade-leave-active {
+		transition: opacity 0.25s ease-out;
+	}
+	.fade-enter, 
+	.fade-leave-to {
+		opacity: 0;
+	}
 </style>
 
