@@ -34,7 +34,7 @@
 			<!-- Grades -->
 			<b-row align-h="between" align-v="center" class="my-3">
 				<b-col cols="auto">
-					<h5 class="text-info">Grades <small>(up to 10 students per grade)</small> </h5>
+					<h5 class="text-info">Grades <small>(up to 10 per grade)</small> </h5>
 				</b-col>
 				<b-col cols="auto" v-show="!ro">
 					<b-btn 

@@ -4,11 +4,11 @@ import types from './mutations';
 
 const state = {
 	isAdmin: false,
-	emailValue: '',
+	email: '',
 };
 const getters = {
 	getIsAdmin: (state) => state.isAdmin,
-	getEmailValue: (state) => state.emailValue,
+	getEmail: (state) => state.email,
 };
 const actions = {
 };
@@ -16,8 +16,8 @@ const mutations = {
 	[types.SET_IS_ADMIN]: (state, isAdmin) => {
 		state.isAdmin = isAdmin;
 	},
-	[types.SET_EMAIL_VALUE]: (state, emailValue) => {
-		state.emailValue = emailValue;
+	[types.SET_EMAIL]: (state, email) => {
+		state.email = email;
 	},
 };
 

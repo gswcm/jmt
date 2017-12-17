@@ -20,8 +20,8 @@
 									id="email" 
 									type="text" 
 									:state="emailState"
-									:value="emailValue"
-									@input="emailValueUpdated"
+									:value="email"
+									@input="emailUpdated"
 									placeholder="just start typing...">
 								</b-form-input>
 							</b-input-group>
@@ -83,16 +83,16 @@
 			override: false
 		}),
 		created() {
-			this.emailValueUpdated(this.emailValue);
+			this.emailUpdated(this.email);
 		},
 		computed: {
 			...mapGetters({
-				emailValue: 'getEmailValue',
+				email: 'getEmail',
 				isAdmin: 'getIsAdmin',
 			}),
 			//-- email handlers
 			emailIsValid() {
-				return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,8}$/.test(this.emailValue);
+				return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,8}$/.test(this.email);
 			},
 			emailState() {
 				return this.emailIsValid ? null : false;
@@ -108,7 +108,7 @@
 			},
 			submit() {
 				this.axios.post('/api/start/set', {
-					email: this.emailValue,
+					email: this.email,
 					value: this.value,
 					uuid: this.uuid
 				})
@@ -129,12 +129,12 @@
 					console.error(error.stack);
 				})
 			},
-			emailValueUpdated: _.debounce(function(emailValue) {
+			emailUpdated: _.debounce(function(email) {
 				this.showForm = false,
-				this.$store.commit(types.SET_EMAIL_VALUE, emailValue.toLowerCase());
+				this.$store.commit(types.SET_EMAIL, email.toLowerCase());
 				this.$store.commit(types.SET_IS_ADMIN, false);
-				if(this.emailIsValid && this.emailValue.length) {
-					this.axios.post('/api/start/get', {email: emailValue})
+				if(this.emailIsValid && this.email.length) {
+					this.axios.post('/api/start/get', { email })
 					.then((response) => {	
 						if(response.data.status) {
 							let error = response.data.error || new Error('not sure');

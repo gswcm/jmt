@@ -1,7 +1,7 @@
 <template>
 	<fieldset class="mt-3">
 		<legend :class="[status ? '' : 'text-danger']">
-			The Sponsor
+			Sponsor information
 		</legend>
 		<div class="fieldset p-3 bg-light rounded">
 			<b-form-group 										

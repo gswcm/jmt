@@ -29,9 +29,14 @@ const commonConfig = merge([
 				inject: false,
 				template: require("html-webpack-template-pug"),
 				title: "JMT | GSW Junior Math Tournament",
-				mobile: true,
+				// mobile: true,
 				injectExtras: {
 					head: [
+						{
+							tag: "meta",
+							name: "viewport",
+							content: "width=device-width, initial-scale=0.75, user-scalable=no"
+						},
 						{
 							tag: "meta",
 							name: "descripton",
