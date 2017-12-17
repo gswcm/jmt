@@ -104,7 +104,8 @@ const productionConfig = merge([
 		options: {
 			limit: 2000,
 			name: "./images/[name].[hash:8].[ext]"
-		}
+		},
+		exclude: /assets\//
 	}),
 	parts.extractBundles([
 		{
@@ -140,7 +141,9 @@ const developmentConfig = merge([
 	parts.loadCSS({
 		exclude: /assets\//,
 	}),
-	parts.loadImages()
+	parts.loadImages({
+		exclude: /assets\//
+	})
 ]);
 
 module.exports = env => {

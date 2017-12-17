@@ -56,7 +56,7 @@
 				<p>
 					Please have in mind that confirmation <strong>e-mail will expire in 1 day</strong> after creation.
 				</p>
-				<b-btn :disabled="!registration.status" variant="primary" @click="submit">{{actionButtonTitle}}</b-btn>
+				<b-btn :disabled="!registration.status" variant="primary" @click="submit">{{!uuid.length ? 'Submit' : 'Update'}}</b-btn>
 			</div>
 		</div>		
 	</b-container>
@@ -79,7 +79,6 @@
 			showForm: false,
 			popupIndex: 0,
 			uuid: '',
-			actionButtonTitle: 'Submit',
 			override: false
 		}),
 		created() {
@@ -109,7 +108,7 @@
 			submit() {
 				this.axios.post('/api/start/set', {
 					email: this.email,
-					value: this.value,
+					registration: this.registration.value,
 					uuid: this.uuid
 				})
 				.then((response) => {
@@ -121,7 +120,6 @@
 					else {
 						this.$noty.success(`Your registration has been accepted. It is now awaiting for approval`);					
 						this.uuid = response.data.uuid || '';
-						this.actionButtonTitle = 'Update';
 					}
 				})
 				.catch((error) => {
@@ -141,7 +139,7 @@
 							throw error;						
 						}
 						else {
-							let user = response.data.user;
+							response = response.data;
 							this.registration.value = {
 								sponsor: {
 									name: '',
@@ -158,7 +156,7 @@
 									tshirts: []
 								}
 							};
-							if(!user || !user.registration || !user.registration.main) {
+							if(!response.registration.main || !response.registration.main.sponsor.name) {
 								//-- unknown user
 								if(this.popupIndex < 3) {
 									this.$noty.info(([
@@ -169,17 +167,14 @@
 								}																	
 							}
 							else { 
-								if(user.registration && user.registration.main) {
-									let value = user.registration.main;
-									this.$noty.success(`Welcome back, ${value.sponsor.name}`);
-									// if(user.admin){
-									// 	this.$noty.info(`...you also seem to be an admin!!!`, {killer: false});
-									// }
-									this.$store.commit(types.SET_IS_ADMIN, user.admin);	
+								if(response.registration && response.registration.main) {
+									let registration = response.registration.main;
+									this.$noty.success(`Welcome back, ${registration.sponsor.name}`);
 									//-- Copy registration data from server into form
-									this.registration.value = value;
+									this.registration.value = _.cloneDeep(registration);
 								}
 							}
+							this.$store.commit(types.SET_IS_ADMIN, response.admin);	
 							this.showForm = true;												
 						}					
 					})

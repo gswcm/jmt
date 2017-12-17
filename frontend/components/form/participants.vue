@@ -12,8 +12,8 @@
 			</b-row>
 			<b-form-group :disabled="ro">
 				<b-form-radio-group :checked="runtime.value.registration" @input="update([],'registration', $event)">
-					<b-form-radio value="school">School (see the note below)</b-form-radio>
-					<b-form-radio value="individual">Individual ($20 per person)</b-form-radio>
+					<b-form-radio value="school">School <span v-if="runtime.value.registration === 'school'">(see note below)</span></b-form-radio>
+					<b-form-radio value="individual">Individual<span v-if="runtime.value.registration === 'individual'">($20 per person)</span></b-form-radio>
 				</b-form-radio-group>
 			</b-form-group>
 			<transition name="flipInX">

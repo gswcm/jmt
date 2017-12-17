@@ -4,6 +4,7 @@ import "./assets/robots.txt";
 import "./assets/sitemap.xml";
 import "./assets/about.css";
 import "./assets/email.css";
+import "./assets/logo_email.png";
 //-- Dependences
 import vue from "vue";
 import vueRouter from "vue-router";

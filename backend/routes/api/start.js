@@ -1,7 +1,8 @@
 const express = require('express');
 const errToJSON = require('error-to-json');
 const router = express.Router();
-const User = require('../../lib/models/user');
+const Account = require('../../lib/models/account');
+const Registration = require('../../lib/models/registration');
 const Token = require('../../lib/models/token');
 const smtpTransport = require('../../lib/mailer');
 const emailTemplates = require('email-templates');
@@ -9,11 +10,27 @@ const path = require('path');
 
 router.post('/start/get', (req, res) => {
 	let email = req.body.email;
-	User.findOne({email})
-	.then((user) => {
-		res.json({
-			status: 0,
-			user,
+	Account.findOne({email})
+	.then((account) => {
+		if(!account) {
+			return new Account({email}).save();
+		}
+		return Promise.resolve(account);
+	})
+	.then(account => {
+		return Registration.findOne({email: account.email})
+		.then(registration => {
+			if(!registration) {
+				return new Registration({email: account.email}).save();
+			}
+			return Promise.resolve(registration);
+		})
+		.then(registration => {
+			return res.json({
+				status: 0,
+				registration,
+				admin: account.admin
+			});
 		});
 	})
 	.catch((error) => {
@@ -26,20 +43,14 @@ router.post('/start/get', (req, res) => {
 
 router.post('/start/set', (req, res) => {
 	let email = req.body.email;
-	let value = req.body.value;
+	let value = req.body.registration;
 	let uuid = req.body.uuid || '';
-	User.findOne({email})
-	.then((user) => {
-		if(!user) {
-			user = new User({email});
-		}
-		if(!user.registration) {
-			user.registration = {};
-		}
-		user.registration.temp = {...value};
-		return user.save();
+	Registration.findOne({email})
+	.then((registration) => {
+		registration.temp = value;
+		return registration.save();
 	})
-	.then((user) => {
+	.then(() => {
 		return Token.findOne({uuid});
 	})
 	.then((token) => {
@@ -54,13 +65,13 @@ router.post('/start/set', (req, res) => {
 					juiceResources: {
 						preserveImportant: true,
 						webResources: {
-							relativeTo: path.join(__dirname, '..', '..', 'dist'),
+							relativeTo: path.join(__dirname, '..', '..', '..', 'build'),
 							images: 16
 						}
 					}
 				})
 				.send({
-					template: 'confirm',
+					template: '../backend/emails/confirm',
 					message: {
 						to: email
 					},
@@ -68,7 +79,7 @@ router.post('/start/set', (req, res) => {
 						host,url
 					},
 				})
-				.then((report) => {
+				.then(() => {
 					return Promise.resolve(token);
 				})
 				.catch((error) => {
