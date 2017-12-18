@@ -1,8 +1,12 @@
 <template>	
-	<b-container>
-		<span>{{lastUpdated || ''}}</span>
-		<div v-if="showForm">
+	<b-container class="mt-3">
+		<div v-if="showContent">
+			<b-alert show dismissible variant="info">
+				Last modification is dated on <strong>{{lastUpdated}}</strong>
+				<b-btn class="p-0" v-show="!showForm" @click="showForm = true" variant="link">Show details...</b-btn>
+			</b-alert>
 			<registration
+				v-show="showForm"
 				:value="registration.value"
 				:options="{
 					debug: false,
@@ -22,12 +26,7 @@
 					In order to pay by <strong>credit card</strong> please contact <a href="https://www.gsw.edu/campus-life/campusliving/studentaccount/contact" target="_blank">GSW Student Accounts</a> at <a href="tel:+12299312767">(229) 931-2767</a> or <a href="tel:+12299312013">(229) 931-2013</a> and mention that you are willing to pay for <strong>"High School Tournament"</strong>.
 				</p>
 			</div>
-			<div class="text-justify border border-info rounded my-3 p-3">	
-				<p>
-					Feel free to make changes (if needed) and then press "Save" button below to save them. 
-				</p>
-				<b-btn :disabled="!registration.status" variant="primary" @click="submit">Save</b-btn>
-			</div>
+			<b-btn class="mt-3" :disabled="!registration.status" variant="primary" @click="submit">Save</b-btn>
 		</div>
 	</b-container>
 </template>
@@ -47,6 +46,7 @@
 				value: {},
 				status: false
 			},
+			showContent: false,
 			showForm: false,
 			lastUpdated: null,
 		}),
@@ -61,8 +61,8 @@
 				}
 				else {
 					this.registration.value = {...response.data.registration.temp};
-					this.lastUpdated = response.data.registration.updated;
-					this.showForm = true;
+					this.lastUpdated = Date(response.data.registration.updated);
+					this.showContent = true;
 				}
 			})
 			.catch((error) => {
@@ -91,7 +91,7 @@
 					}
 					else {
 						this.$noty.success(`Thank you for confirming (updating) the registration`);
-						this.lastUpdated = response.data.registration.updated;
+						this.lastUpdated = Date(response.data.registration.updated);
 					}
 				})
 				.catch((error) => {
