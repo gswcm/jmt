@@ -31,15 +31,17 @@
 				</b-form-group>
 			</div>
 		</fieldset>
-		<div v-if="isAdmin" class="bg-warning p-3 rounded my-3">
-			<p class="text-dark text-justify">
-				The registration form is hiddenn for you because your account is associated with administrative privilege. You can access admin interface by clicking <router-link to="/admin">Admin</router-link> link in the navigation bar on up top. 
+		<!-- <div  class="bg-warning p-3 rounded my-3"> -->
+		<b-alert v-if="isAdmin" show variant="info" class="my-3 py-3 rounded"> 
+			<h4  class="mb-3">Welcome, Administrator!</h4>
+			<p class="text-justify">
+				The registration form is hidden for you because your account is associated with administrative privilege. You can access admin interface by clicking <router-link to="/admin">Admin</router-link> link in the navigation bar on up top. 
 			</p>
-			<p>
+			<p class="text-justify">
 				Please note that should you decide to walk through the registration process, your info will not be included into reports... because you are not a real user.
 			</p>
-			<b-btn variant="outline-dark" @click="override = !override">Show/hide registration form</b-btn>
-		</div>
+			<b-btn variant="outline-info" @click="override = !override">Show/hide registration form</b-btn>
+		</b-alert>
 		<div v-if="(showForm && !isAdmin) || override">
 			<registration
 				:value="registration.value"
@@ -56,7 +58,12 @@
 				<p>
 					Please have in mind that confirmation <strong>e-mail will expire in 1 day</strong> after creation.
 				</p>
-				<b-btn :disabled="!registration.status" variant="primary" @click="submit">{{!uuid.length ? 'Submit' : 'Update'}}</b-btn>
+				<vue-recaptcha
+					@verify="reCAPTCHA_verify"
+					@expired="reCAPTCHA_expired"
+					sitekey="6Lf0hT0UAAAAABA4S9i1kYCY_EKLIDCx2SodYvTg">
+					<b-btn :disabled="!registration.status" variant="primary" @click="submit">{{!uuid.length ? 'Submit' : 'Update'}}</b-btn>
+        		</vue-recaptcha>
 			</div>
 		</div>		
 	</b-container>
@@ -65,11 +72,14 @@
 <script>
 	const _ = require('lodash');
 	import registration from './form/registration.vue';
+	import vueRecaptcha from 'vue-recaptcha';
 	import { mapGetters } from 'vuex';
 	import types from '../store/mutations';
+	
 	export default {
 		components: {
-			registration
+			registration,
+			'vue-recaptcha': vueRecaptcha
 		},
 		data: () => ({
 			registration: {
@@ -79,7 +89,8 @@
 			showForm: false,
 			popupIndex: 0,
 			uuid: '',
-			override: false
+			override: false,
+			reCAPTCHA_sitekey: process.env.reCAPTCHA_KEY
 		}),
 		created() {
 			this.emailUpdated(this.email);
@@ -101,6 +112,12 @@
 			}			
 		},
 		methods: {
+			reCAPTCHA_verify: response => {
+				console.log(response);
+			},
+			reCAPTCHA_expired: () => {
+				console.log('reCAPTCHA expired');
+			},
 			update(data) {
 				this.registration.value = data.value;
 				this.registration.status = data.status;
@@ -158,7 +175,7 @@
 							};
 							if(!response.registration.main || !response.registration.main.sponsor.name) {
 								//-- unknown user
-								if(this.popupIndex < 3) {
+								if(this.popupIndex < 3 && !response.admin) {
 									this.$noty.info(([
 										"I cannot recognize you, but you are welcome to continue",
 										"Are you still typing? Can't recall your email? That's funny 😁",
@@ -171,7 +188,7 @@
 									let registration = response.registration.main;
 									this.$noty.success(`Welcome back, ${registration.sponsor.name}`);
 									//-- Copy registration data from server into form
-									this.registration.value = _.cloneDeep(registration);
+									this.registration.value = {...registration};
 								}
 							}
 							this.$store.commit(types.SET_IS_ADMIN, response.admin);	
