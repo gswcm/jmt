@@ -33,6 +33,11 @@ const router = new vueRouter({
 				import(/* webpackChunkName: "start" */ "./components/start.vue")
 		},
 		{
+			path: "/email",
+			component: () =>
+				import(/* webpackChunkName: "email" */ "./components/email.vue")
+		},
+		{
 			path: "*",
 			component: () =>
 				import(/* webpackChunkName: "404" */ "./components/404.vue")

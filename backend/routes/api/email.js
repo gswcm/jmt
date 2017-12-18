@@ -1,7 +1,7 @@
 const express = require('express');
 const errToJSON = require('error-to-json');
 const router = express.Router();
-const User = require('../../lib/models/user');
+const Registration = require('../../lib/models/registration');
 const Token = require('../../lib/models/token');
 
 const allowedActions = ['confirm','restore'];
@@ -38,24 +38,23 @@ router.post('/email/eval', (req, res) => {
 router.post('/email/confirm', (req, res) => {
 	let email = req.body.email;
 	let value = req.body.value;
-	User.findOne({ email })
-	.then((user) => {
-		if(!user || !user.registration || !user.registration.temp) {
+	Registration.findOne({ email })
+	.then((registration) => {
+		if(!registration || !registration.temp) {
 			return Promise.reject(new Error('Cannot locate registration associated with the token'));
 		}
 		if(value) {
-			user.registration.temp = user.registration.main = {...value};
-			return user.save();
+			registration.temp = registration.main = {...value};
+			return registration.save();
 		}
 		else {
-			return Promise.resolve(user);
+			return Promise.resolve(registration);
 		}
 	})
-	.then((user) => {
+	.then((registration) => {
 		res.json({
 			status: 0,
-			value: user.registration.temp,
-			hasData: user.registration.main !== null
+			registration
 		});
 	})
 	.catch((error) => {
