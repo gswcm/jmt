@@ -58,12 +58,15 @@
 				<p>
 					Please have in mind that confirmation <strong>e-mail will expire in 1 day</strong> after creation.
 				</p>
-				<vue-recaptcha
-					@verify="reCAPTCHA_verify"
-					@expired="reCAPTCHA_expired"
-					sitekey="6Lf0hT0UAAAAABA4S9i1kYCY_EKLIDCx2SodYvTg">
-					<b-btn :disabled="!registration.status" variant="primary" @click="submit">{{!uuid.length ? 'Submit' : 'Update'}}</b-btn>
-        		</vue-recaptcha>
+				<invisible-recaptcha 
+					:disabled="!registration.status"
+					id="recaptcha"
+					class="btn btn-primary"
+					theme="light"
+					:sitekey="reCAPTCHA_sitekey" 
+					:callback="submit">
+					{{!uuid.length ? 'Submit' : 'Update'}}
+				</invisible-recaptcha>
 			</div>
 		</div>		
 	</b-container>
@@ -72,14 +75,14 @@
 <script>
 	const _ = require('lodash');
 	import registration from './form/registration.vue';
-	import vueRecaptcha from 'vue-recaptcha';
+	import InvisibleRecaptcha from 'vue-invisible-recaptcha';
 	import { mapGetters } from 'vuex';
 	import types from '../store/mutations';
 	
 	export default {
 		components: {
 			registration,
-			'vue-recaptcha': vueRecaptcha
+			"invisible-recaptcha": InvisibleRecaptcha
 		},
 		data: () => ({
 			registration: {
@@ -90,7 +93,7 @@
 			popupIndex: 0,
 			uuid: '',
 			override: false,
-			reCAPTCHA_sitekey: process.env.reCAPTCHA_KEY
+			reCAPTCHA_sitekey: ''
 		}),
 		created() {
 			this.emailUpdated(this.email);
@@ -112,18 +115,13 @@
 			}			
 		},
 		methods: {
-			reCAPTCHA_verify: response => {
-				console.log(response);
-			},
-			reCAPTCHA_expired: () => {
-				console.log('reCAPTCHA expired');
-			},
 			update(data) {
 				this.registration.value = data.value;
 				this.registration.status = data.status;
 			},
-			submit() {
+			submit(response) {
 				this.axios.post('/api/start/set', {
+					recaptcha: response,
 					email: this.email,
 					registration: this.registration.value,
 					uuid: this.uuid
@@ -192,6 +190,7 @@
 								}
 							}
 							this.$store.commit(types.SET_IS_ADMIN, response.admin);	
+							this.reCAPTCHA_sitekey = response.sitekey;
 							this.showForm = true;												
 						}					
 					})

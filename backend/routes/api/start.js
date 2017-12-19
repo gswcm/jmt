@@ -1,5 +1,6 @@
 const express = require('express');
 const errToJSON = require('error-to-json');
+const axios = require('axios');
 const router = express.Router();
 const Account = require('../../lib/models/account');
 const Registration = require('../../lib/models/registration');
@@ -29,7 +30,8 @@ router.post('/start/get', (req, res) => {
 			return res.json({
 				status: 0,
 				registration,
-				admin: account.admin
+				admin: account.admin,
+				sitekey: process.env.reCAPTCHA_KEY
 			});
 		});
 	})
@@ -42,10 +44,27 @@ router.post('/start/get', (req, res) => {
 });
 
 router.post('/start/set', (req, res) => {
+	let recaptcha = req.body.recaptcha;
 	let email = req.body.email;
 	let value = req.body.registration;
 	let uuid = req.body.uuid || '';
-	Registration.findOne({email})
+	//-- reCAPTCHA
+	axios({
+		method: 'get',
+		url: 'https://www.google.com/recaptcha/api/siteverify', 
+		params: {
+			secret: process.env.reCAPTCHA_SECRET,
+			response: recaptcha
+		}
+	})
+	.then(response => {
+		if(response.data.success) {
+			return Registration.findOne({email});
+		}
+		else {
+			return Promise.reject(new Error(`reCAPTCHA verification failure: ${JSON.stringify(response.data['error-codes'])}`));
+		}
+	})
 	.then((registration) => {
 		registration.temp = value;
 		return registration.save();

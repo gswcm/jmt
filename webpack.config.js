@@ -53,12 +53,12 @@ const commonConfig = merge([
 							name: "robots",
 							content: "INDEX,FOLLOW"
 						},
-						{
-							tag: "script",
-							src: "https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit",
-							async: true,
-							defer: true
-						}
+						// {
+						// 	tag: "script",
+						// 	src: "https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit",
+						// 	async: true,
+						// 	defer: true
+						// }
 					],
 					body: [
 						{
