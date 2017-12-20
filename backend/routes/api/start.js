@@ -48,7 +48,6 @@ router.post('/start/set', (req, res) => {
 	let email = req.body.email;
 	let value = req.body.registration;
 	let uuid = req.body.uuid || '';
-	console.log(uuid,value,email);
 	//-- reCAPTCHA
 	axios({
 		method: 'get',

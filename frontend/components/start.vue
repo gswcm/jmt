@@ -143,9 +143,30 @@
 				})
 			},
 			emailUpdated: _.debounce(function(email) {
-				this.showForm = false,
+				//-- Defaults
+				this.showForm = false;
+				this.uuid = '';	
+				this.override = false;
+				this.registration.value = {
+					sponsor: {
+						name: '',
+						phone: ''
+					},
+					participants: {
+						registration: "school",
+						grades: [
+							{ type: null, qty: 1}
+						]
+					},
+					misc: {
+						meals: 0,
+						tshirts: []
+					}
+				};
+				//-- Refreshing the store
 				this.$store.commit(types.SET_EMAIL, email.toLowerCase());
 				this.$store.commit(types.SET_IS_ADMIN, false);
+				//-- Sending request for validation to the backend
 				if(this.emailIsValid && this.email.length) {
 					this.axios.post('/api/start/get', { email })
 					.then((response) => {	
@@ -155,22 +176,6 @@
 						}
 						else {
 							response = response.data;
-							this.registration.value = {
-								sponsor: {
-									name: '',
-									phone: ''
-								},
-								participants: {
-									registration: "school",
-									grades: [
-										{ type: null, qty: 1}
-									]
-								},
-								misc: {
-									meals: 0,
-									tshirts: []
-								}
-							};
 							if(!response.registration.main || !response.registration.main.sponsor.name) {
 								//-- unknown user
 								if(this.popupIndex < 3 && !response.admin) {
@@ -180,7 +185,6 @@
 										"OK, I'm done... I zipped it... no more disturbance from me..."
 									])[this.popupIndex++]);
 								}	
-								this.uuid = '';																
 							}
 							else { 
 								if(response.registration && response.registration.main) {
