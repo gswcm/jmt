@@ -43,10 +43,7 @@ const accountSchema = mongoose.Schema({
 	});
 })
 .method('checkPassword',function(password){
-	const $this = this;
-	return new Promise((resolve) => {
-		bcrypt.compare(password, $this.password).then(resolve);
-	});
+	return bcrypt.compare(password, this.password);
 })
 .index({
 	email: 1

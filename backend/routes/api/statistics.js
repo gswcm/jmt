@@ -53,6 +53,37 @@ router.post('/statistics', (req, res) => {
 	});
 });
 
+router.post("/records", (req, res) => {
+	let filter = req.body.filter;
+	Account.find(filter.account)
+		.then(accounts => {
+			let emails = accounts.map(i => i.email);
+			return Registration.find({
+				$and: [
+					{ email: emails }, 
+					{ main: { $ne: null } }, 
+					filter.registration
+				]
+			});
+		})
+		.then(records => {
+			return res.json({
+				status: 0,
+				records: records.map(i => ({
+					main: i.main,
+					paid: i.paid,
+					email: i.email
+				}))
+			});
+		})
+		.catch(error => {
+			res.json({
+				status: 500,
+				error: errToJSON(error)
+			});
+		});
+});
+
 router.get('/statistics', (req, res) => {
 	Account.find({admin:false})
 	.then(accounts => {

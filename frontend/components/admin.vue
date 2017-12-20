@@ -36,32 +36,25 @@
 				We will send an e-mail with password recovery link to <strong>{{credentials.email}}</strong>. Please confirm your will or close this dialog to cancel recovery process.
 			</p>
 		</b-modal>
-		<div v-if="authenticated">
-			<div v-if="Object.keys(teams).length">
-				<!-- <teams @refresh="credentialChecker()" :details="teams" :credentials="credentials"/> -->
-			</div>
-			<div v-else>
-				<h3>Registration records not found</h3>
-			</div>
-		</div>
+		<records v-if="authenticated"/>
 	</b-container>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-// import teams from './teams.vue'
+import records from './records.vue'
 const _ = require("lodash");
 export default {
 	data: () => ({
 		credentials: {
 			email: "",
-			password: ""
+			password: "abc123"
 		},
 		authenticated: false,
 		registrations: []
 	}),
 	components: {
-		// teams
+		records
 	},
 	created() {
 		this.credentials.email = this.email;
@@ -128,14 +121,8 @@ export default {
 						throw error;
 					} 
 					else {
-						return this.axios.post('/api/statistics').then(response => {
-							return Promise.resolve(response.data)
-						})
+						this.authenticated = true;
 					}
-				})
-				.then(stats => {
-					this.authenticated = true;
-					this.teams = stats.teams;
 				})
 				.catch(error => {
 					console.error(error.message);

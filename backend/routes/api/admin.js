@@ -12,50 +12,51 @@ let evalCredentials = credentials => {
 	let email = credentials.email;
 	let password = credentials.password;
 	return Account.findOne({ email })
-		.then(account => {
-			if (account) {
-				return account.checkPassword(password).then(result => {
-					return result
-						? Promise.resolve(account)
-						: Promise.reject(new Error("Incorrect credentials"));
-				});
-			} 
-			else {
-				return Promise.reject(new Error("Incorrect credentials"));
-			}
-		})
-		.then(account => {
-			if (!account.admin) {
-				return Promise.reject(new Error("User is not an admin"));
-			}
-			return Promise.resolve();
-		});
+	.then(account => {
+		if (account) {
+			return account.checkPassword(password)
+			.then(result => {
+				return result
+					? Promise.resolve(account)
+					: Promise.reject(new Error("Incorrect credentials"));
+			});
+		} 
+		else {
+			return Promise.reject(new Error("Incorrect credentials"));
+		}
+	})
+	.then(account => {
+		if (!account.admin) {
+			return Promise.reject(new Error("User is not an admin"));
+		}
+		return Promise.resolve();
+	});
 };
 
 router.post("/admin/password/update", (req, res) => {
 	let email = req.body.email;
 	let password = req.body.password;
-	User.findOne({ email })
-		.then(user => {
-			if (!user) {
-				user = new User({ email });
-			}
-			if (password.length) {
-				user.passcode = password;
-			}
-			return user.save();
-		})
-		.then(() => {
-			return res.json({
-				status: 0
-			});
-		})
-		.catch(error => {
-			res.json({
-				status: 500,
-				error: errToJSON(error)
-			});
+	Account.findOne({ email })
+	.then(account => {
+		if (!account) {
+			account = new Account({ email });
+		}
+		if (password.length) {
+			account.password = password;
+		}
+		return account.save();
+	})
+	.then(() => {
+		return res.json({
+			status: 0
 		});
+	})
+	.catch(error => {
+		res.json({
+			status: 500,
+			error: errToJSON(error)
+		});
+	});
 });
 
 router.post("/admin/password/request", (req, res) => {
@@ -71,13 +72,19 @@ router.post("/admin/password/request", (req, res) => {
 				juiceResources: {
 					preserveImportant: true,
 					webResources: {
-						relativeTo: path.join(__dirname, "..", "..", "dist"),
+						relativeTo: path.join(
+							__dirname,
+							"..",
+							"..",
+							"..",
+							"build"
+						),
 						images: 16
 					}
 				}
 			})
 				.send({
-					template: "restore",
+					template: "../backend/emails/restore",
 					message: {
 						to: email
 					},
@@ -86,7 +93,7 @@ router.post("/admin/password/request", (req, res) => {
 						url
 					}
 				})
-				.then(report => {
+				.then(() => {
 					return Promise.resolve(token);
 				})
 				.catch(error => {
@@ -96,7 +103,7 @@ router.post("/admin/password/request", (req, res) => {
 					return Promise.reject(error);
 				});
 		})
-		.then(token => {
+		.then(() => {
 			res.json({
 				status: 0
 			});
@@ -135,17 +142,17 @@ router.post("/admin/eval", (req, res) => {
 	let email = req.body.email;
 	let password = req.body.password;
 	evalCredentials({ email, password })
-		.then(() => {
-			return res.json({
-				status: 0
-			});
-		})
-		.catch(error => {
-			res.json({
-				status: 500,
-				error: errToJSON(error)
-			});
+	.then(() => {
+		return res.json({
+			status: 0
 		});
+	})
+	.catch(error => {
+		res.json({
+			status: 500,
+			error: errToJSON(error)
+		});
+	});
 });
 
 module.exports = router;

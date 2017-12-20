@@ -11,8 +11,8 @@ const smtpConfig = {
 				type: 'rotating-file',
 				level: 'info',
 				path: 'backend/logs/mailer.log',
-				period: '1d', // daily rotation
-				count: 7 // keep 3 back copies
+				period: '1w', // weekly rotation
+				count: 10 // keep 10 back copies
 			},
 			{
 				stream: process.stderr,
