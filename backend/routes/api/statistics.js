@@ -55,14 +55,14 @@ router.post('/statistics', (req, res) => {
 
 router.post("/records", (req, res) => {
 	let filter = req.body.filter;
-	Account.find(filter.account)
+	Account.find(filter.account || {})
 		.then(accounts => {
 			let emails = accounts.map(i => i.email);
 			return Registration.find({
 				$and: [
 					{ email: emails }, 
 					{ main: { $ne: null } }, 
-					filter.registration
+					filter.registration || {}
 				]
 			});
 		})
