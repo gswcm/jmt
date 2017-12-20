@@ -1,46 +1,48 @@
 const express = require('express');
 const errToJSON = require('error-to-json');
 const router = express.Router();
-const User = require('../../lib/models/user');
+const Registration = require('../../lib/models/registration');
+const Account = require('../../lib/models/account');
 
-let getSummary = (users) => {
+let getSummary = (registrations) => {
 	let tShirts = {};
-	users.filter((i) => i.registration.main.team.tshirts.length > 0).forEach(i => {
-		let tshirts = i.registration.main.team.tshirts;
-		tshirts.forEach(t => {
+	registrations.filter((i) => i.main.misc.tshirts.length > 0).forEach(i => {
+		i.main.misc.tshirts.forEach(t => {
 			tShirts[t.size] = ((t.size in tShirts) ? tShirts[t.size] : 0) + t.qty;
 		});
 	});
+	let grades = {};
+	let numStudents = 0;
+	registrations.filter((i) => i.main.participants.grades.length > 0).forEach(i => {
+		i.main.participants.grades.forEach(g => {
+			grades[g.type] = ((g.type in grades) ? grades[g.type] : 0) + g.qty;
+			numStudents += g.qty;
+		});
+	});
 	let summary = {
-		numTeams: users.length,
-		numStudents: users.reduce((a,i) => a + i.registration.main.team.names.length, 0),
-		numMeals: users.reduce((a,i) => a + i.registration.main.team.meals, 0),
+		numTeams: registrations.length,
+		numStudents,
+		numMeals: registrations.reduce((a,i) => a + i.main.misc.meals, 0),
+		grades: Object.keys(grades).length ? grades : null,
 		tshirts: Object.keys(tShirts).length ? tShirts : null
 	};
 	return summary;
 };
 
-let getTeams = function(users) {
-	let teams = {};
-	users.forEach(i => {
-		teams[i.email] = i.registration.main;
-		teams[i.email].paid = i.paid || false;
-	});
-	return teams;
-};
-
 router.post('/statistics', (req, res) => {
-	User.find(
-		{
-			$and: [{ admin: false }, { 'registration.main': { $ne: null } }]
-		}
-	)
-	.lean()
-	.then((users) => {
+	Account.find({admin:false})
+	.then(accounts => {
+		let emails = accounts.map(i => i.email);
+		return Registration.find(
+			{
+				$and: [{ email: emails }, { 'main': { $ne: null } }]
+			}
+		);
+	})
+	.then((registrations) => {
 		return res.json({
 			status: 0,
-			teams: getTeams(users),
-			summary: getSummary(users)
+			summary: getSummary(registrations)
 		});
 	})
 	.catch((error) => {
@@ -52,16 +54,19 @@ router.post('/statistics', (req, res) => {
 });
 
 router.get('/statistics', (req, res) => {
-	User.find(
-		{
-			$and: [{ admin: false }, { 'registration.main': { $ne: null } }]
-		}
-	)
-	.lean()
-	.then((users) => {		
+	Account.find({admin:false})
+	.then(accounts => {
+		let emails = accounts.map(i => i.email);
+		return Registration.find(
+			{
+				$and: [{ email: emails }, { 'main': { $ne: null } }]
+			}
+		);
+	})
+	.then((registrations) => {		
 		return res.render('statistics', {
 			status: 0,
-			summary: getSummary(users)
+			summary: getSummary(registrations)
 		});
 	})
 	.catch((error) => {

@@ -14,7 +14,7 @@
 						</p>
 						<hr>
 						<p v-if="showStat" class="text-center">
-							So far we received registrations from <span class="text-danger">{{summary.numTeams}} teams</span> bringing <span class="text-danger">{{summary.numStudents}} students</span>.
+							So far we received registrations from <span class="text-danger">{{summary.numTeams}} schools/individuals </span> bringing <span class="text-danger">{{summary.numStudents}} students</span>.
 						</p>
 						<b-btn variant="success" to="/start" class="d-block">Let's Get Started</b-btn>
 					</b-card-body>
@@ -34,7 +34,7 @@
 		created() {
 			this.$store.commit(types.SET_IS_ADMIN, false);
 			this.$store.commit(types.SET_EMAIL, '');
-			/* 
+			
 			this.axios.post('/api/statistics')
 			.then(response => {
 				if(!response.data.status) {
@@ -45,7 +45,7 @@
 			.catch(error => {
 				console.error(error.message);
 			}); 
-			*/
+			
 		}
 	}
 </script>

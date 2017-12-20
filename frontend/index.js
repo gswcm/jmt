@@ -38,6 +38,11 @@ const router = new vueRouter({
 				import(/* webpackChunkName: "email" */ "./components/email.vue")
 		},
 		{
+			path: "/admin",
+			component: () =>
+				import(/* webpackChunkName: "admin" */ "./components/admin.vue")
+		},
+		{
 			path: "*",
 			component: () =>
 				import(/* webpackChunkName: "404" */ "./components/404.vue")

@@ -75,7 +75,7 @@
 <script>
 	const _ = require('lodash');
 	import registration from './form/registration.vue';
-	import InvisibleRecaptcha from 'vue-invisible-recaptcha';
+	import InvisibleRecaptcha from './misc/InvisibleRecaptcha.vue';
 	import { mapGetters } from 'vuex';
 	import types from '../store/mutations';
 	
@@ -179,7 +179,8 @@
 										"Are you still typing? Can't recall your email? That's funny 😁",
 										"OK, I'm done... I zipped it... no more disturbance from me..."
 									])[this.popupIndex++]);
-								}																	
+								}	
+								this.uuid = '';																
 							}
 							else { 
 								if(response.registration && response.registration.main) {

@@ -12,10 +12,10 @@ app.set("view engine", "pug");
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use("/api", require("./routes/api/admin"));
+app.use("/api", require("./routes/api/admin"));
 app.use("/api", require("./routes/api/start"));
 app.use("/api", require("./routes/api/email"));
-// app.use("/api", require("./routes/api/statistics"));
+app.use("/api", require("./routes/api/statistics"));
 app.use("/about", require("./routes/about"));
 app.use(
 	history({
