@@ -8,13 +8,18 @@
 		<b-row>
 			<b-col cols="12" sm="auto">
 				<h4>Filters</h4>
-				<div class="bg-light p-3 my-3">
+				<div class="bg-light px-3 py-1 mt-1">
+					<!-- Payment status -->
 					<b-form-group label="Payment status">
-						<b-form-radio-group v-model="paid">
+						<b-form-radio-group :checked="filter.paid" @input="filterUpdated('paid',$event)">
 							<b-form-radio :value="true">Paid</b-form-radio>
 							<b-form-radio :value="false">Not paid</b-form-radio>
 							<b-form-radio :value="null">Any</b-form-radio>
 						</b-form-radio-group>
+					</b-form-group>
+					<!-- Partial email match -->
+					<b-form-group label="E-mail contains...">
+						<b-form-input :value="filter.email" @input="debounce('email',$event)" type="text" placeholder="part of the e-mail address"></b-form-input>
 					</b-form-group>
 				</div>
 			</b-col>
@@ -39,19 +44,23 @@
 </template>
 
 <script>
+	import _ from 'lodash';
 	export default {
 		data: () => ({
 			records: [],
-			paid: false,
-			email: ''
+			filter: {
+				paid: false,
+				email: ''
+			},
+			email: '',
 		}),
 		created() {
 			this.refresh();
 		},
 		watch: {
-			paid() {
-				this.refresh()
-			}
+			// "filter.paid"() {
+			// 	this.refresh()
+			// },
 		},
 		computed: {
 			options() {
@@ -59,6 +68,13 @@
 			},
 		},
 		methods: {
+			debounce: _.debounce(function(source,value) {
+				this.filterUpdated(source,value)
+			}, 500),
+			filterUpdated(source,value) {
+				this.filter[source] = value;
+				this.refresh();
+			},
 			refresh() {
 				this.axios.post("/api/records", {
 					filter: {
@@ -67,7 +83,10 @@
 						},
 						registration: {
 							paid: {
-								$in: this.paid === null ? [true,false] : [this.paid]
+								$in: this.filter.paid === null ? [true,false] : [this.filter.paid]
+							},
+							email: {
+								$regex: _.escapeRegExp(this.filter.email)
 							}
 						}
 					}
