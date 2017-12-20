@@ -15,7 +15,7 @@
 							<label>Sponsor's e-mail</label>
 						</b-col>
 						<b-col col sm>
-							<b-input-group>
+							<b-input-group @keyup.enter="keyup">
 								<b-form-input 
 									id="email" 
 									type="text" 
@@ -24,7 +24,10 @@
 									@input="emailUpdated"
 									placeholder="just start typing...">
 								</b-form-input>
-							</b-input-group>
+							</b-input-group>							
+						</b-col>
+						<b-col v-if="emailIsValid" class="pl-0" cols="auto">
+							<b-btn variant="primary" @click="emailEval">Go!</b-btn>
 						</b-col>
 					</b-row>
 					<div slot="feedback" class="d-flex justify-content-end mt-2">{{emailFeedback}}</div>
@@ -32,10 +35,10 @@
 			</div>
 		</fieldset>
 		<!-- <div  class="bg-warning p-3 rounded my-3"> -->
-		<b-alert v-if="isAdmin" show variant="info" class="my-3 py-3 rounded"> 
+		<b-alert v-if="showForm && isAdmin" show variant="info" class="my-3 py-3 rounded"> 
 			<h4  class="mb-3">Welcome, Administrator!</h4>
 			<p class="text-justify">
-				The registration form is hidden for you because your account is associated with administrative privilege. You can access admin interface by clicking <router-link to="/admin">Admin</router-link> link in the navigation bar on up top. 
+				The registration form is hidden for you because your account is associated with administrative privilege. You can access admin interface by clicking <router-link to="/admin">Admin</router-link> link in the navigation bar up top. 
 			</p>
 			<p class="text-justify">
 				Please note that should you decide to walk through the registration process, your info will not be included into reports... because you are not a real user.
@@ -142,11 +145,24 @@
 					console.error(error.stack);
 				})
 			},
-			emailUpdated: _.debounce(function(email) {
-				//-- Defaults
-				this.showForm = false;
-				this.uuid = '';	
-				this.override = false;
+			emailUpdated: _.debounce(
+				function(email) {
+					email = email.toLowerCase();
+					if(email !== this.email) {
+						this.$store.commit(types.SET_EMAIL, email);
+						this.showForm = false;
+						this.uuid = '';	
+						this.override = false;
+					}
+				}, 500
+			),
+			keyup(e) {
+				if(this.emailIsValid) {
+					this.emailEval();
+				}
+			},
+			emailEval() {
+				//-- Defaults				
 				this.registration.value = {
 					sponsor: {
 						name: '',
@@ -164,11 +180,10 @@
 					}
 				};
 				//-- Refreshing the store
-				this.$store.commit(types.SET_EMAIL, email.toLowerCase());
 				this.$store.commit(types.SET_IS_ADMIN, false);
 				//-- Sending request for validation to the backend
 				if(this.emailIsValid && this.email.length) {
-					this.axios.post('/api/start/get', { email })
+					this.axios.post('/api/start/get', { email: this.email })
 					.then((response) => {	
 						if(response.data.status) {
 							let error = response.data.error || new Error('not sure');
@@ -205,7 +220,7 @@
 						console.error(error.stack);
 					})
 				}
-			}, 500)
+			}
 		}
 	}
 </script>

@@ -27,12 +27,16 @@ router.post('/start/get', (req, res) => {
 			return Promise.resolve(registration);
 		})
 		.then(registration => {
-			return res.json({
-				status: 0,
-				registration,
-				admin: account.admin,
-				sitekey: process.env.reCAPTCHA_KEY
-			});
+			if (process.env.reCAPTCHA_KEY.length) 
+				return res.json({
+					status: 0,
+					registration,
+					admin: account.admin,
+					sitekey: process.env.reCAPTCHA_KEY
+				});
+			else {
+				return Promise.reject(new Error('reCAPTCHA sitekey is not set as environment variable reCAPTCHA_KEY'));
+			}
 		});
 	})
 	.catch((error) => {
