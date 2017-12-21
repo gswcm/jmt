@@ -16,6 +16,19 @@
 					<b-form-group label="E-mail contains...">
 						<b-form-input :value="filter.email" @input="debounce('email',$event)" type="text" placeholder="part of the e-mail address"></b-form-input>
 					</b-form-group>
+					<!-- Partial sponsor name match -->
+					<b-form-group label="Sponsor's name contains...">
+						<b-form-input :value="filter.name" @input="debounce('name',$event)" type="text" placeholder="part of the sponsor's name"></b-form-input>
+					</b-form-group>
+					<hr>
+					<!-- Admin status -->
+					<b-form-group label="Admin status">
+						<b-form-radio-group :checked="filter.admin" @input="filterUpdated('admin',$event)">
+							<b-form-radio :value="true">Admin</b-form-radio>
+							<b-form-radio :value="false">Regular user</b-form-radio>
+							<b-form-radio :value="null">Any</b-form-radio>
+						</b-form-radio-group>
+					</b-form-group>
 				</div>
 			</b-col>
 			<b-col cols="auto" class="d-none d-sm-block px-0 border-left"></b-col>
@@ -60,7 +73,9 @@
 			records: [],
 			filter: {
 				paid: null,
-				email: ''
+				email: '',
+				admin: false,
+				name: ''
 			},
 			email: '',
 		}),
@@ -115,7 +130,9 @@
 				this.axios.post("/api/admin/records", {
 					filter: {
 						account: {
-							admin: false
+							admin: {
+								$in: this.filter.admin === null ? [true,false] : [this.filter.admin]
+							}
 						},
 						registration: {
 							paid: {
@@ -123,6 +140,10 @@
 							},
 							email: {
 								$regex: _.escapeRegExp(this.filter.email)
+							},
+							"main.sponsor.name": {
+								$regex: _.escapeRegExp(this.filter.name),
+								$options: 'i'
 							}
 						}
 					}
