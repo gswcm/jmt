@@ -3,7 +3,7 @@
 		<b-row>
 			<b-col cols="12" sm="auto">
 				<h4>Filters</h4>
-				<div class="bg-light px-3 py-1 mt-1">
+				<div class="bg-light px-3 py-1 mt-1 rounded">
 					<!-- Payment status -->
 					<b-form-group label="Payment status">
 						<b-form-radio-group :checked="filter.paid" @input="filterUpdated('paid',$event)">
@@ -33,7 +33,7 @@
 						</b-row>
 						<!-- Change payment status -->
 						<b-form-checkbox class="mt-3" :checked="paid" @input="paidUpdated">
-							New payment status
+							Payment status
 						</b-form-checkbox>
 					</b-alert>
 					<registration :value="reg" :options="{ debug: false, ro: true }"/>
@@ -53,10 +53,13 @@
 		components: {
 			registration
 		},
+		props: {
+			credentials: Object
+		},
 		data: () => ({
 			records: [],
 			filter: {
-				paid: false,
+				paid: null,
 				email: ''
 			},
 			email: '',
@@ -78,7 +81,28 @@
 		},
 		methods: {
 			paidUpdated(value) {
-				console.log(value);
+				this.axios.post("/api/admin/paid", {
+					email: this.email,
+					credentials: this.credentials,
+					paid: value,
+				})
+				.then(response => {
+					if (response.data.status) {
+						//-- server error
+						let error = response.data.error || new Error("not sure");
+						throw error;
+					} 
+					else {
+						this.$noty.success(`Payment status has been updated to '${response.data.paid ? 'paid' : 'not paid'}'`);
+						this.refresh();
+					}
+				})
+				.catch(error => {
+					this.$noty.error(
+						`Something went wrong... more specifically: ${error.message}`
+					);
+					console.error(error.stack);
+				});
 			},
 			debounce: _.debounce(function(source,value) {
 				this.filterUpdated(source,value)
@@ -88,7 +112,7 @@
 				this.refresh();
 			},
 			refresh() {
-				this.axios.post("/api/records", {
+				this.axios.post("/api/admin/records", {
 					filter: {
 						account: {
 							admin: false

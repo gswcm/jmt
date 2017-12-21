@@ -27,7 +27,7 @@ router.post('/start/get', (req, res) => {
 			return Promise.resolve(registration);
 		})
 		.then(registration => {
-			if (process.env.reCAPTCHA_KEY.length) 
+			if (process.env.reCAPTCHA_KEY) 
 				return res.json({
 					status: 0,
 					registration,

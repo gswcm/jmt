@@ -36,7 +36,7 @@
 				We will send an e-mail with password recovery link to <strong>{{credentials.email}}</strong>. Please confirm your will or close this dialog to cancel recovery process.
 			</p>
 		</b-modal>
-		<records v-if="authenticated"/>
+		<records :credentials="credentials" v-if="authenticated"/>
 	</b-container>
 </template>
 

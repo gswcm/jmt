@@ -62,50 +62,81 @@ router.post("/admin/password/update", (req, res) => {
 router.post("/admin/password/request", (req, res) => {
 	let email = req.body.email;
 	new Token({ email })
-		.save()
-		.then(token => {
-			let host = `${req.protocol}://${req.get("host")}`;
-			let url = `${host}/email?action=restore&token=${token.uuid}`;
-			return new emailTemplates({
-				transport: smtpTransport,
-				juice: true,
-				juiceResources: {
-					preserveImportant: true,
-					webResources: {
-						relativeTo: path.join(
-							__dirname,
-							"..",
-							"..",
-							"..",
-							"build"
-						),
-						images: 16
-					}
+	.save()
+	.then(token => {
+		let host = `${req.protocol}://${req.get("host")}`;
+		let url = `${host}/email?action=restore&token=${token.uuid}`;
+		return new emailTemplates({
+			transport: smtpTransport,
+			juice: true,
+			juiceResources: {
+				preserveImportant: true,
+				webResources: {
+					relativeTo: path.join(
+						__dirname,
+						"..",
+						"..",
+						"..",
+						"build"
+					),
+					images: 16
 				}
-			})
-				.send({
-					template: "../backend/emails/restore",
-					message: {
-						to: email
-					},
-					locals: {
-						host,
-						url
-					}
-				})
-				.then(() => {
-					return Promise.resolve(token);
-				})
-				.catch(error => {
-					if (token) {
-						token.remove();
-					}
-					return Promise.reject(error);
-				});
+			}
+		})
+		.send({
+			template: "../backend/emails/restore",
+			message: {
+				to: email
+			},
+			locals: {
+				host,
+				url
+			}
 		})
 		.then(() => {
-			res.json({
-				status: 0
+			return Promise.resolve(token);
+		})
+		.catch(error => {
+			if (token) {
+				token.remove();
+			}
+			return Promise.reject(error);
+		});
+	})
+	.then(() => {
+		res.json({
+			status: 0
+		});
+	})
+	.catch(error => {
+		res.json({
+			status: 500,
+			error: errToJSON(error)
+		});
+	});
+});
+
+router.post("/admin/records", (req, res) => {
+	let filter = req.body.filter;
+	Account.find(filter.account || {})
+		.then(accounts => {
+			let emails = accounts.map(i => i.email);
+			return Registration.find({
+				$and: [
+					{ email: emails },
+					{ main: { $ne: null } },
+					filter.registration || {}
+				]
+			});
+		})
+		.then(records => {
+			return res.json({
+				status: 0,
+				records: records.map(i => ({
+					main: i.main,
+					paid: i.paid,
+					email: i.email
+				}))
 			});
 		})
 		.catch(error => {
@@ -121,21 +152,25 @@ router.post("/admin/paid", (req, res) => {
 	let email = req.body.email;
 	let credentials = req.body.credentials;
 	evalCredentials(credentials)
-		.then(() => {
-			return User.findOne({ email }).then(user => {
-				if (!user) {
-					return Promise.reject(new Error("Team not found"));
-				}
-				user.paid = paid;
-				return user.save();
-			});
-		})
-		.then(() => {
-			return res.json({ status: 0 });
-		})
-		.catch(error => {
-			res.json({ status: 500, error: errToJSON(error) });
+	.then(() => {
+		return Registration.findOne({ email })
+		.then(registration => {
+			if (!registration) {
+				return Promise.reject(new Error("Registration not found"));
+			}
+			registration.paid = paid;
+			return registration.save();
 		});
+	})
+	.then((registration) => {
+		return res.json({ 
+			paid: registration.paid,
+			status: 0 
+		});
+	})
+	.catch(error => {
+		res.json({ status: 500, error: errToJSON(error) });
+	});
 });
 
 router.post("/admin/eval", (req, res) => {
