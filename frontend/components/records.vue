@@ -1,10 +1,5 @@
 <template>
 	<div>
-		<!-- <b-btn 
-			variant="outline-dark"
-			@click="refresh">
-			<span class="oi oi-reload"></span>
-		</b-btn> -->
 		<b-row>
 			<b-col cols="12" sm="auto">
 				<h4>Filters</h4>
@@ -27,14 +22,19 @@
 			<b-col cols="12" sm>
 				<div v-if="options.length" class="mt-3">	
 					<b-alert show variant="info">
-					<b-row align-v="center">
-						<b-col cols="auto">
-							<label><strong>Sponsor's email</strong></label>
-						</b-col>
-						<b-col col cols>
-							<b-form-select v-model="email" :options="options"/>
-						</b-col>	
-					</b-row>
+						<!-- Select sponsor's e-mail -->
+						<b-row align-v="center">
+							<b-col cols="auto">
+								<label><strong>Sponsor's email</strong></label>
+							</b-col>
+							<b-col col cols>
+								<b-form-select v-model="email" :options="options"/>
+							</b-col>	
+						</b-row>
+						<!-- Change payment status -->
+						<b-form-checkbox class="mt-3" :checked="paid" @input="paidUpdated">
+							New payment status
+						</b-form-checkbox>
 					</b-alert>
 					<registration :value="reg" :options="{ debug: false, ro: true }"/>
 				</div>
@@ -65,6 +65,9 @@
 			this.refresh();
 		},
 		computed: {
+			paid() {
+				return this.records.find(i => i.email === this.email).paid; 
+			},
 			reg() {
 				let temp = this.records.find(i => i.email === this.email);
 				return temp = 'main' in temp ? temp.main : {}
@@ -74,6 +77,9 @@
 			},
 		},
 		methods: {
+			paidUpdated(value) {
+				console.log(value);
+			},
 			debounce: _.debounce(function(source,value) {
 				this.filterUpdated(source,value)
 			}, 500),
