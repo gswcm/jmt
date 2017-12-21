@@ -21,10 +21,10 @@
 					<strong>Note</strong>: The registration cost per school team is calculated based on the payment date:
 					<ul>
 						<li>
-							If paid <strong>before February 10<span class="superscript">th</span>, 2018</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
+							If paid <strong>before January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
 						</li>
 						<li>
-							If paid <strong>after February 10<span class="superscript">th</span>, 2018</strong> the cost is <strong>$75</strong>
+							If paid <strong>after January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$75</strong>
 						</li>
 					</ul>
 					The <strong>Total</strong> below shows both cases.

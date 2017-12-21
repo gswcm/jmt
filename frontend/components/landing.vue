@@ -12,6 +12,9 @@
 						<p class="card-text mt-3 text-justify">
 							This portal is designed to support registration of School team(s) and individual students for the upcoming <strong>Junior Math Tournament</strong>. Start the process by clicking the button below, and have in mind that you will always be able to revise the registration by visiting this application again. 
 						</p>
+						<p>
+							Registration portal will close on <strong>February 16<span class="superscript">th</span>, 2018</strong>.
+						</p>
 						<hr>
 						<p v-if="showStat" class="text-center">
 							So far we received registrations from <span class="text-danger">{{summary.numTeams}} schools/individuals </span> bringing <span class="text-danger">{{summary.numStudents}} students</span>.
@@ -55,6 +58,9 @@
 		max-width: 75%;
 		display: block;
 		margin: 0 auto;
+	}
+	.superscript {
+		vertical-align: super;
 	}
 </style>
 

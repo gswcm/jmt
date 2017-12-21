@@ -48,7 +48,7 @@ export default {
 	data: () => ({
 		credentials: {
 			email: "",
-			password: "abc123"
+			password: ""
 		},
 		authenticated: false,
 		registrations: []
