@@ -37,6 +37,11 @@
 			</p>
 		</b-modal>
 		<records :credentials="credentials" v-if="authenticated"/>
+		<b-alert v-else show dismissible variant="danger">
+			<h5>
+				This banner will be replaced with the real admin interface as soon as you provide correct credentials. So keep on trying...
+			</h5>
+		</b-alert>
 	</b-container>
 </template>
 
