@@ -69,6 +69,11 @@
 			});
 			this.update();
 		},
+		watch: {
+			value() {
+				this.runtime.value = _.cloneDeep(this.value);
+			}
+		},
 		methods: {
 			update(path = [], key, value) {
 				let query = [...path, key][0];

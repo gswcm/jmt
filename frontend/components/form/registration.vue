@@ -57,6 +57,11 @@
 		created() {
 			this.runtime.value = _.cloneDeep(this.value);
 		},
+		watch: {
+			value() {
+				this.runtime.value = _.cloneDeep(this.value);
+			}
+		},
 		methods: {
 			update(key, data) {
 				if(key) {

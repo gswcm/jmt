@@ -26,6 +26,7 @@
 			<b-col cols="auto" class="d-none d-sm-block px-0 border-left"></b-col>
 			<b-col cols="12" sm>
 				<div v-if="options.length" class="mt-3">	
+					<b-alert show variant="info">
 					<b-row align-v="center">
 						<b-col cols="auto">
 							<label><strong>Sponsor's email</strong></label>
@@ -34,6 +35,8 @@
 							<b-form-select v-model="email" :options="options"/>
 						</b-col>	
 					</b-row>
+					</b-alert>
+					<registration :value="reg" :options="{ debug: false, ro: true }"/>
 				</div>
 				<b-alert v-else show variant="warning">
 					<h5>No records found</h5>
@@ -45,7 +48,11 @@
 
 <script>
 	import _ from 'lodash';
+	import registration from './form/registration.vue';
 	export default {
+		components: {
+			registration
+		},
 		data: () => ({
 			records: [],
 			filter: {
@@ -57,12 +64,11 @@
 		created() {
 			this.refresh();
 		},
-		watch: {
-			// "filter.paid"() {
-			// 	this.refresh()
-			// },
-		},
 		computed: {
+			reg() {
+				let temp = this.records.find(i => i.email === this.email);
+				return temp = 'main' in temp ? temp.main : {}
+			},
 			options() {
 				return this.records.map(i => i.email);
 			},

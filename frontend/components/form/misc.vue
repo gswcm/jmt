@@ -119,7 +119,11 @@
 			});
 			this.update();
 		},
-
+		watch: {
+			value() {
+				this.runtime.value = _.cloneDeep(this.value);
+			}
+		},
 		methods: {
 			removeTShirt(index) {
 				this.runtime.value.tshirts.splice(index,1); 

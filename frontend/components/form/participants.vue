@@ -7,7 +7,7 @@
 			<!-- Registration type -->
 			<b-row align-h="between" align-v="center" class="my-3">
 				<b-col cols="auto">
-					<h5 class="text-info">You are registering as...</h5>
+					<h5 class="text-info">Registration type</h5>
 				</b-col>
 			</b-row>
 			<b-form-group :disabled="ro">
@@ -120,7 +120,11 @@ export default {
 		});
 		this.update();
 	},
-
+	watch: {
+		value() {
+			this.runtime.value = _.cloneDeep(this.value);
+		}
+	},
 	methods: {
 		removeGrade(index) {
 			this.runtime.value.grades.splice(index, 1);
