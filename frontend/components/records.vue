@@ -13,8 +13,8 @@
 						</b-form-radio-group>
 					</b-form-group>
 					<!-- Partial email match -->
-					<b-form-group label="E-mail contains...">
-						<b-form-input :value="filter.email" @input="debounce('email',$event)" type="text" placeholder="part of the e-mail address"></b-form-input>
+					<b-form-group label="Sponsor's e-mail contains...">
+						<b-form-input :value="filter.email" @input="debounce('email',$event)" type="text" placeholder="part of the sponsor's e-mail"></b-form-input>
 					</b-form-group>
 					<!-- Partial sponsor name match -->
 					<b-form-group label="Sponsor's name contains...">
