@@ -28,7 +28,7 @@
 </template>
 
 <script>
-	const _ = require('lodash');
+	import { cloneDeep } from 'lodash';
 	import sponsor from './sponsor.vue';
 	import misc from './misc.vue';
 	import participants from './participants.vue';
@@ -55,22 +55,22 @@
 			total: ""
 		}),
 		created() {
-			this.runtime.value = _.cloneDeep(this.value);
+			this.runtime.value = cloneDeep(this.value);
 		},
 		watch: {
 			value() {
-				this.runtime.value = _.cloneDeep(this.value);
+				this.runtime.value = cloneDeep(this.value);
 			}
 		},
 		methods: {
 			update(key, data) {
 				if(key) {
-					this.runtime.value[key] = _.cloneDeep(data.value);
+					this.runtime.value[key] = cloneDeep(data.value);
 					this.runtime.status[key] = data.status;
 				}
 				this.status = Object.keys(this.runtime.status).reduce((a,i) => a && this.runtime.status[i], true);
 				this.$emit('input', {
-					value: _.cloneDeep(this.runtime.value),
+					value: cloneDeep(this.runtime.value),
 					status: this.status
 				});
 				this.updateTotal()

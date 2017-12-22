@@ -14,6 +14,8 @@ exports.cleanup = (path) => ({
 //-- Webpack DevServer configurationm
 exports.devServer = ({ host, port } = {}) => ({
 	devServer: {
+		hot: true,
+		inline: true,
 		quiet: true,
 		overlay: true,
 		stats: "errors-only",
@@ -25,7 +27,10 @@ exports.devServer = ({ host, port } = {}) => ({
 		},
 		host,
 		port
-	}
+	},
+	plugins: [
+		new webpack.HotModuleReplacementPlugin()
+	]
 });
 
 //-- Font loader

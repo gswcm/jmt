@@ -60,7 +60,7 @@
 </template>
 
 <script>
-	import _ from 'lodash';
+	import { debounce, escapeRegExp } from 'lodash';
 	import registration from './form/registration.vue';
 	export default {
 		components: {
@@ -119,7 +119,7 @@
 					console.error(error.stack);
 				});
 			},
-			debounce: _.debounce(function(source,value) {
+			debounce: debounce(function(source,value) {
 				this.filterUpdated(source,value)
 			}, 500),
 			filterUpdated(source,value) {
@@ -139,10 +139,10 @@
 								$in: this.filter.paid === null ? [true,false] : [this.filter.paid]
 							},
 							email: {
-								$regex: _.escapeRegExp(this.filter.email)
+								$regex: escapeRegExp(this.filter.email)
 							},
 							"main.sponsor.name": {
-								$regex: _.escapeRegExp(this.filter.name),
+								$regex: escapeRegExp(this.filter.name),
 								$options: 'i'
 							}
 						}

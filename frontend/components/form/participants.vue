@@ -97,7 +97,7 @@
 
 <script>
 import "vue-animate-transitions/dist/vue-animate-transitions.min.css";
-const _ = require("lodash");
+const { cloneDeep } = require("lodash");
 export default {
 	props: {
 		value: Object,
@@ -114,7 +114,7 @@ export default {
 		status: false,
 	}),
 	created() {
-		this.runtime.value = _.cloneDeep(this.value);
+		this.runtime.value = cloneDeep(this.value);
 		Object.keys(this.runtime.value).forEach(key => {
 			this.runtime.status[key] = this.validate(key);
 		});
@@ -122,7 +122,7 @@ export default {
 	},
 	watch: {
 		value() {
-			this.runtime.value = _.cloneDeep(this.value);
+			this.runtime.value = cloneDeep(this.value);
 		}
 	},
 	methods: {
@@ -147,7 +147,7 @@ export default {
 			}
 			this.status = Object.keys(this.runtime.status).reduce((a, i) => a && this.runtime.status[i],true);
 			this.$emit("input", {
-				value: _.cloneDeep(this.runtime.value),
+				value: cloneDeep(this.runtime.value),
 				status: this.status
 			});
 		},

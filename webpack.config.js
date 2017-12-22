@@ -3,6 +3,7 @@ const merge = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ProgressPlugin = require("progress-webpack-plugin");
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
+const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const webpack = require('webpack');
 
 const parts = require("./webpack.parts");
@@ -68,6 +69,9 @@ const commonConfig = merge([
 					]
 				},
 				appMountId: "app"
+			}),
+			new ScriptExtHtmlWebpackPlugin({
+				defaultAttribute: 'defer'
 			}),
 			new ProgressPlugin(true),
 			new FriendlyErrorsWebpackPlugin(),

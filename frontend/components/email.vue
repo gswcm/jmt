@@ -18,7 +18,6 @@
 </template>
 
 <script>
-	import _ from 'lodash';
 	import confirm from './emailActions/confirm.vue';
 	import restore from './emailActions/restore.vue';
 	export default {

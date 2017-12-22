@@ -76,7 +76,7 @@
 </template>
 
 <script>
-	const _ = require('lodash');
+	import { debounce } from 'lodash';
 	import registration from './form/registration.vue';
 	import InvisibleRecaptcha from './misc/InvisibleRecaptcha.vue';
 	import { mapGetters } from 'vuex';
@@ -145,7 +145,7 @@
 					console.error(error.stack);
 				})
 			},
-			emailUpdated: _.debounce(
+			emailUpdated: debounce(
 				function(email) {
 					email = email.toLowerCase();
 					if(email !== this.email) {

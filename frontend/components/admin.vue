@@ -37,10 +37,10 @@
 			</p>
 		</b-modal>
 		<records :credentials="credentials" v-if="authenticated"/>
-		<b-alert v-else show dismissible variant="danger">
-			<h5>
+		<b-alert v-else show variant="warning">
+			<p class="text-justified">
 				This banner will be replaced with the real admin interface as soon as you provide correct credentials. So keep on trying...
-			</h5>
+			</p>
 		</b-alert>
 	</b-container>
 </template>
@@ -48,7 +48,7 @@
 <script>
 import { mapGetters } from "vuex";
 import records from './records.vue'
-const _ = require("lodash");
+import { debounce } from 'lodash';
 export default {
 	data: () => ({
 		credentials: {
@@ -112,7 +112,7 @@ export default {
 				console.error(error.stack);
 			});
 		},
-		credentialChecker: _.debounce(function(source, value) {
+		credentialChecker: debounce(function(source, value) {
 			if (source in this.credentials) {
 				this.credentials[source] = value;
 			}

@@ -32,7 +32,6 @@
 </template>
 
 <script>
-	import _ from 'lodash';
 	import registration from '../form/registration.vue';
 	export default {
 		components: {
