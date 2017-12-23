@@ -119,7 +119,9 @@ const productionConfig = merge([
 	parts.extractBundles([
 		{
 			name: "vendor",
-			minChunks: ({ resource }) => /node_modules/.test(resource)
+			minChunks: ({ resource }) => {
+				return /node_modules/.test(resource);
+			}
 		},
 		{
 			name: "manifest",
