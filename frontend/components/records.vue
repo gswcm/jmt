@@ -13,12 +13,16 @@
 						</b-form-radio-group>
 					</b-form-group>
 					<!-- Partial email match -->
-					<b-form-group label="Sponsor's e-mail contains...">
+					<b-form-group label="Sponsor's <span class='text-info'>e-mail</span> contains...">
 						<b-form-input :value="filter.email" @input="debounce('email',$event)" type="text" placeholder="part of the sponsor's e-mail"></b-form-input>
 					</b-form-group>
 					<!-- Partial sponsor name match -->
-					<b-form-group label="Sponsor's name contains...">
+					<b-form-group label="Sponsor's <span class='text-info'>name</span> contains...">
 						<b-form-input :value="filter.name" @input="debounce('name',$event)" type="text" placeholder="part of the sponsor's name"></b-form-input>
+					</b-form-group>
+					<!-- Partial school name match -->
+					<b-form-group label="<span class='text-info'>School</span> name contains...">
+						<b-form-input :value="filter.school" @input="debounce('school',$event)" type="text" placeholder="part of the school name"></b-form-input>
 					</b-form-group>
 					<hr>
 					<!-- Admin status -->
@@ -75,7 +79,8 @@
 				paid: null,
 				email: '',
 				admin: false,
-				name: ''
+				name: '',
+				school: ''
 			},
 			email: '',
 			paid: false
@@ -85,7 +90,6 @@
 		},
 		watch: {
 			email() {
-				console.log(this.email);
 				let record = this.records.find(i => i.email === this.email);
 				this.paid = record ? record.paid : false; 				
 			} 
@@ -148,6 +152,10 @@
 							},
 							"main.sponsor.name": {
 								$regex: escapeRegExp(this.filter.name),
+								$options: 'i'
+							},
+							"main.participants.school": {
+								$regex: escapeRegExp(this.filter.school),
 								$options: 'i'
 							}
 						}

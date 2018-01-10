@@ -21,6 +21,7 @@
 					<b-form-group 																
 						label-for="school"
 						:state="state(runtime.status.school)"
+						v-show="runtime.value.school.length"
 						class="mt-3">
 						<b-row align-v="center">
 							<b-col cols="12" sm="auto">
