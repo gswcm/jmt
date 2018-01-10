@@ -27,13 +27,17 @@ const recordSchema = mongoose.Schema({
 		name: {
 			type: String,
 			default: ''
-		},
+		},		
 		phone: {
 			type: String,
 			default: ''
 		},
 	},
 	participants: {
+		school: {
+			type: String,
+			default: ''
+		},
 		registration: {
 			type: String,
 			required: true

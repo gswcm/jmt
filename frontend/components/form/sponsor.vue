@@ -96,7 +96,6 @@
 						return true;
 				}
 			},
-
 			state(isValid) {
 				return isValid ? null : false;
 			},

@@ -9,6 +9,8 @@ var debug = require('debug')('jmt:server');
 var http = require('http');
 var mongoose = require('mongoose');
 
+var port = normalizePort(process.env.PORT || '4000');
+app.set('port', port);
 
 /**
  * Connect to MongoDB and return connection to set up event listeners
@@ -24,8 +26,6 @@ mongoose.connection
 	process.exit(200);
 })
 .once('open', function(){
-	var port = normalizePort(process.env.PORT || '4000');
-	app.set('port', port);
 	var server = http.createServer(app);
 	server.listen(port);
 	server.on('error', onServerError);

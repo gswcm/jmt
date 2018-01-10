@@ -170,6 +170,7 @@
 					},
 					participants: {
 						registration: "school",
+						school: "",
 						grades: [
 							{ type: null, qty: 1}
 						]

@@ -45,7 +45,7 @@
 							</b-col>	
 						</b-row>
 						<!-- Change payment status -->
-						<b-form-checkbox class="mt-3" :checked="paid" @input="paidUpdated">
+						<b-form-checkbox class="mt-3" :checked="paid" @change="paidUpdated">
 							Payment status
 						</b-form-checkbox>
 					</b-alert>
@@ -78,14 +78,19 @@
 				name: ''
 			},
 			email: '',
+			paid: false
 		}),
 		created() {
 			this.refresh();
 		},
+		watch: {
+			email() {
+				console.log(this.email);
+				let record = this.records.find(i => i.email === this.email);
+				this.paid = record ? record.paid : false; 				
+			} 
+		},
 		computed: {
-			paid() {
-				return this.records.find(i => i.email === this.email).paid; 
-			},
 			reg() {
 				let temp = this.records.find(i => i.email === this.email);
 				return temp = 'main' in temp ? temp.main : {}
@@ -156,7 +161,19 @@
 					} 
 					else {
 						this.records = response.data.records;
-						this.email = this.records.length ? this.records[0].email : null;
+						if(this.records.length) {
+							let record = this.records.find(i => i.email === this.email);	
+							if(record) {
+								this.paid = record.paid;
+							}
+							else {
+								this.email = this.records[0].email;
+								this.paid = this.records[0].paid;	
+							}
+						}
+						else {
+							this.email = null;
+						}
 					}
 				})
 				.catch(error => {

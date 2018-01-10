@@ -10,25 +10,47 @@
 					<h5 class="text-info">Registration type</h5>
 				</b-col>
 			</b-row>
-			<b-form-group :disabled="ro">
-				<b-form-radio-group :checked="runtime.value.registration" @input="update([],'registration', $event)">
-					<b-form-radio value="school">School <span v-if="runtime.value.registration === 'school'">(see note below)</span></b-form-radio>
-					<b-form-radio value="individual">Individual<span v-if="runtime.value.registration === 'individual'">($20 per person)</span></b-form-radio>
+			<b-form-group>
+				<b-form-radio-group :disabled="ro" :checked="runtime.value.registration" @input="update([],'registration', $event)">
+					<b-form-radio value="school">School <span v-if="runtime.value.registration === 'school' && !ro">(see note below)</span></b-form-radio>
+					<b-form-radio value="individual">Individual<span v-if="runtime.value.registration === 'individual' && !ro">($20 per person)</span></b-form-radio>
 				</b-form-radio-group>
 			</b-form-group>
 			<transition name="flipInX">
-				<p v-if="!ro && runtime.value.registration === 'school'" class="mt-3 pl-3 border border-bottom-0 border-top-0 border-right-0 border-dark">
-					<strong>Note</strong>: The registration cost per school team is calculated based on the payment date:
-					<ul>
-						<li>
-							If paid <strong>before January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
-						</li>
-						<li>
-							If paid <strong>after January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$75</strong>
-						</li>
-					</ul>
-					The <strong>Total</strong> below shows both cases.
-				</p>
+				<div v-if="runtime.value.registration === 'school'">
+					<b-form-group 																
+						label-for="school"
+						:state="state(runtime.status.school)"
+						class="mt-3">
+						<b-row align-v="center">
+							<b-col cols="12" sm="auto">
+								<label>School name</label>
+							</b-col>
+							<b-col col sm>
+								<b-form-input 
+									type="text" 
+									:disabled="ro"
+									:state="state(runtime.status.school)"
+									:value="runtime.value.school"
+									@input="update([],'school',$event)"
+									placeholder="school name">
+								</b-form-input>
+							</b-col>		
+						</b-row>
+					</b-form-group>
+					<p v-show="!ro" class="mt-3 pl-3 border border-bottom-0 border-top-0 border-right-0 border-dark">
+						<strong>Note</strong>: The registration cost per school team is calculated based on the payment date:
+						<ul>
+							<li>
+								If paid <strong>before January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
+							</li>
+							<li>
+								If paid <strong>after January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$75</strong>
+							</li>
+						</ul>
+						The <strong>Total</strong> below shows both cases.
+					</p>
+				</div>
 			</transition>
 			<hr class="my-4">
 			<!-- Grades -->
@@ -161,6 +183,8 @@ export default {
 					);
 				case "registration":
 					return ["school", "individual"].indexOf(subj) > -1;
+				case "school":
+					return true;
 			}
 		},
 		state(isValid) {
