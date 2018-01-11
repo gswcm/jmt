@@ -42,6 +42,7 @@
 		"eslint": "^4.15.0",
 		"extract-text-webpack-plugin": "^3.0.2",
 		"file-loader": "^1.1.6",
+		"font-awesome": "^4.7.0",
 		"friendly-errors-webpack-plugin": "^1.6.1",
 		"html-webpack-plugin": "^2.30.1",
 		"html-webpack-template-pug": "^1.1.1",

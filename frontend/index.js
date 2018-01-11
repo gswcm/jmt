@@ -14,9 +14,9 @@ import vueAxios from "vue-axios";
 import bootstrapVue from "bootstrap-vue";
 import store from "./store";
 import root from "./components/root.vue";
-import "open-iconic/font/css/open-iconic-bootstrap.css";
+// import "open-iconic/font/css/open-iconic-bootstrap.css";
+import "font-awesome/css/font-awesome.css";
 import "bootstrap/dist/css/bootstrap.css";
-// import 'bootswatch/dist/united/bootstrap.css';
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "vuejs-noty/dist/vuejs-noty.css";
 

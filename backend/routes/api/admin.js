@@ -116,6 +116,22 @@ router.post("/admin/password/request", (req, res) => {
 		});
 	});
 });
+router.delete("/admin/records", (req, res) => {
+	let email = req.query.email;
+	Registration.deleteMany({email}).exec()
+	.then(() => {
+		res.json({
+			status: 0,
+			email
+		});
+	})	
+	.catch(error => {
+		res.json({
+			status: 500,
+			error: errToJSON(error)
+		});
+	});
+});
 
 router.post("/admin/records", (req, res) => {
 	let filter = req.body.filter;	

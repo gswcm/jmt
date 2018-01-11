@@ -38,7 +38,7 @@
 					<b-form-group label="Confirmation status">
 						<b-form-radio-group :checked="filter.confirmed" @input="filterUpdated('confirmed',$event)">
 							<b-form-radio :value="true">Confirmed</b-form-radio>
-							<b-form-radio :value="false">Not confirmed</b-form-radio>
+							<b-form-radio :value="false">Pending</b-form-radio>
 							<b-form-radio :value="null">Any</b-form-radio>
 						</b-form-radio-group>
 					</b-form-group>
@@ -56,7 +56,17 @@
 							<b-col col cols>
 								<b-form-select v-model="email" :options="options"/>
 							</b-col>	
+							<b-col cols="auto" class="pl-0">
+								<b-btn variant="outline-dark" v-b-modal.removeRecord>
+									<i class="fa fa-trash" aria-hidden="true"></i>
+								</b-btn>
+							</b-col>
 						</b-row>
+						<b-modal id="removeRecord" title="Are you sure?" ok-title="Confirm" cancel-title="Close" @ok="removeRecord">
+							<p>
+								You are about to permanently remove registration record for <strong>{{email}}</strong>. Please confirm your will or close this dialog to cancel.
+							</p>
+						</b-modal>
 						<!-- Change payment status -->
 						<b-form-checkbox class="mt-3" :checked="paid" @change="paidUpdated">
 							Payment status
@@ -111,6 +121,30 @@
 			},
 		},
 		methods: {
+			removeRecord() {
+				this.axios.delete("/api/admin/records", {
+					params: {
+						email: this.email
+					}
+				})
+				.then(response => {
+					if (response.data.status) {
+						//-- server error
+						let error = response.data.error || new Error("not sure");
+						throw error;
+					} 
+					else {
+						this.$noty.success(`Registration record for ${response.data.email} has been removed`);
+						this.refresh();
+					}
+				})
+				.catch(error => {
+					this.$noty.error(
+						`Something went wrong... more specifically: ${error.message}`
+					);
+					console.error(error.stack);
+				});
+			},
 			paidUpdated(value) {
 				this.axios.post("/api/admin/paid", {
 					email: this.email,
