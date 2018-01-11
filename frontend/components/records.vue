@@ -57,14 +57,31 @@
 								<b-form-select v-model="email" :options="options"/>
 							</b-col>	
 							<b-col cols="auto" class="pl-0">
-								<b-btn variant="outline-dark" v-b-modal.removeRecord>
+								<b-btn variant="outline-dark" v-b-modal.confirmRegistration v-b-tooltip.hover title="Confirm registration">
+									<i class="fa fa-check" aria-hidden="true"></i>
+								</b-btn>
+							</b-col>
+							<b-col cols="auto" class="pl-0">
+								<b-btn variant="outline-dark" v-b-modal.removeRecord v-b-tooltip.hover title="Remove registration record">
 									<i class="fa fa-trash" aria-hidden="true"></i>
 								</b-btn>
 							</b-col>
+							<b-col cols="auto" class="pl-0">
+								<b-btn variant="outline-dark" v-clipboard:copy="email" v-clipboard:success="onCopy" v-b-tooltip.hover title="Copy email to clipboard">
+									<i class="fa fa-clipboard" aria-hidden="true"></i>
+								</b-btn>
+							</b-col>
 						</b-row>
+						<!-- Confirm removal -->
 						<b-modal id="removeRecord" title="Are you sure?" ok-title="Confirm" cancel-title="Close" @ok="removeRecord">
 							<p>
 								You are about to permanently remove registration record for <strong>{{email}}</strong>. Please confirm your will or close this dialog to cancel.
+							</p>
+						</b-modal>
+						<!-- Confirm converting Temp -> Main -->
+						<b-modal id="confirmRegistration" title="Are you sure?" ok-title="Confirm" cancel-title="Close" @ok="confirmRegistration">
+							<p>
+								You are about confirm temporal registration for <strong>{{email}}</strong>. Please confirm your will or close this dialog to cancel.
 							</p>
 						</b-modal>
 						<!-- Change payment status -->
@@ -121,11 +138,36 @@
 			},
 		},
 		methods: {
-			removeRecord() {
-				this.axios.delete("/api/admin/records", {
-					params: {
-						email: this.email
+			onCopy(e) {
+				this.$noty.success(`E-mail copied into clipboard`);
+			},
+			confirmRegistration() {
+				this.axios.post("/api/admin/confirm", {
+					email: this.email,
+					credentials: this.credentials
+				})
+				.then(response => {
+					if (response.data.status) {
+						//-- server error
+						let error = response.data.error || new Error("not sure");
+						throw error;
+					} 
+					else {
+						this.$noty.success(`Registration for ${response.data.email} has been confirmed`);
+						this.refresh();
 					}
+				})
+				.catch(error => {
+					this.$noty.error(
+						`Something went wrong... more specifically: ${error.message}`
+					);
+					console.error(error.stack);
+				});
+			},
+			removeRecord() {
+				this.axios.post("/api/admin/remove", {
+					email: this.email,
+					credentials: this.credentials
 				})
 				.then(response => {
 					if (response.data.status) {

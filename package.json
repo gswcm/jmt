@@ -63,6 +63,7 @@
 		"vue": "^2.5.13",
 		"vue-animate-transitions": "^1.0.0",
 		"vue-axios": "^2.0.2",
+		"vue-clipboard2": "0.0.8",
 		"vue-loader": "^13.7.0",
 		"vue-recaptcha": "^1.1.0",
 		"vue-router": "^3.0.1",

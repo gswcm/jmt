@@ -9,6 +9,7 @@ import "./assets/logo_email.png";
 import vue from "vue";
 import vueRouter from "vue-router";
 import vueNoty from "vuejs-noty";
+import vueClipboard from "vue-clipboard2";
 import axios from "axios";
 import vueAxios from "vue-axios";
 import bootstrapVue from "bootstrap-vue";
@@ -52,6 +53,7 @@ const router = new vueRouter({
 });
 vue.use(bootstrapVue);
 vue.use(vueRouter);
+vue.use(vueClipboard);
 vue.use(vueAxios, axios);
 vue.use(vueNoty, {
 	killer: true,

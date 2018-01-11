@@ -116,9 +116,41 @@ router.post("/admin/password/request", (req, res) => {
 		});
 	});
 });
-router.delete("/admin/records", (req, res) => {
-	let email = req.query.email;
-	Registration.deleteMany({email}).exec()
+router.post("/admin/confirm", (req, res) => {
+	let email = req.body.email;
+	let credentials = req.body.credentials;
+	evalCredentials(credentials)
+	.then(() => {
+		return Registration.findOne({ email })
+		.then(registration => {
+			if (!registration) {
+				return Promise.reject(new Error("Registration not found"));
+			}
+			registration.main = registration.temp || null;
+			return registration.save();
+		});
+	})
+	.then(() => {
+		return res.json({ 
+			email,
+			status: 0 
+		});
+	})
+	.catch(error => {
+		res.json({
+			status: 500,
+			error: errToJSON(error)
+		});
+	});
+});
+
+router.post("/admin/remove", (req, res) => {
+	let email = req.body.email;
+	let credentials = req.body.credentials;
+	evalCredentials(credentials)
+	.then(() => {
+		return Registration.deleteMany({email}).exec();
+	})
 	.then(() => {
 		res.json({
 			status: 0,
