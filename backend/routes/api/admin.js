@@ -1,4 +1,5 @@
 const express = require("express");
+const _ = require("lodash");
 const errToJSON = require("error-to-json");
 const router = express.Router();
 const Account = require("../../lib/models/account");
@@ -120,11 +121,10 @@ router.post("/admin/records", (req, res) => {
 	let filter = req.body.filter;	
 	Account.find(filter.account || {})
 		.then(accounts => {			
-			let emails = accounts.map(i => i.email);			
+			let emails = accounts.map(i => i.email);	
 			return Registration.find({
 				$and: [
 					{ email: { $in: emails} },
-					{ main: { $ne: null } },
 					filter.registration || {}
 				]
 			});
@@ -132,11 +132,7 @@ router.post("/admin/records", (req, res) => {
 		.then(records => {
 			return res.json({
 				status: 0,
-				records: records.map(i => ({
-					main: i.main,
-					paid: i.paid,
-					email: i.email
-				}))
+				records: records.map(i => _.pick(i, ["email", "paid", "temp", "main"]))
 			});
 		})
 		.catch(error => {

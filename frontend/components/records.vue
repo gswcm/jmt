@@ -33,6 +33,15 @@
 							<b-form-radio :value="null">Any</b-form-radio>
 						</b-form-radio-group>
 					</b-form-group>
+					<hr>
+					<!-- Registration confirmation status -->
+					<b-form-group label="Confirmation status">
+						<b-form-radio-group :checked="filter.confirmed" @input="filterUpdated('confirmed',$event)">
+							<b-form-radio :value="true">Confirmed</b-form-radio>
+							<b-form-radio :value="false">Not confirmed</b-form-radio>
+							<b-form-radio :value="null">Any</b-form-radio>
+						</b-form-radio-group>
+					</b-form-group>
 				</div>
 			</b-col>
 			<b-col cols="auto" class="d-none d-sm-block px-0 border-left"></b-col>
@@ -53,7 +62,7 @@
 							Payment status
 						</b-form-checkbox>
 					</b-alert>
-					<registration :value="reg" :options="{ debug: false, ro: true }"/>
+					<registration v-if="reg !== null" :value="reg" :options="{ debug: false, ro: true }"/>					
 				</div>
 				<b-alert v-else show variant="warning">
 					<h5>No records found</h5>
@@ -77,27 +86,25 @@
 			records: [],
 			filter: {
 				paid: null,
-				email: '',
 				admin: false,
+				confirmed: true,
+				email: '',
 				name: '',
 				school: ''
 			},
 			email: '',
-			paid: false
 		}),
 		created() {
 			this.refresh();
 		},
-		watch: {
-			email() {
-				let record = this.records.find(i => i.email === this.email);
-				this.paid = record ? record.paid : false; 				
-			} 
-		},
 		computed: {
+			paid() {
+				let record = this.records.find(i => i.email === this.email);
+				return record ? record.paid : false;
+			},
 			reg() {
-				let temp = this.records.find(i => i.email === this.email);
-				return temp = 'main' in temp ? temp.main : {}
+				let record = this.records.find(i => i.email === this.email);
+				return record.main ? record.main : record.temp;
 			},
 			options() {
 				return this.records.map(i => i.email);
@@ -136,31 +143,61 @@
 				this.refresh();
 			},
 			refresh() {
-				this.axios.post("/api/admin/records", {
-					filter: {
-						account: {
-							admin: {
-								$in: this.filter.admin === null ? [true,false] : [this.filter.admin]
-							}
-						},
-						registration: {
-							paid: {
-								$in: this.filter.paid === null ? [true,false] : [this.filter.paid]
-							},
-							email: {
-								$regex: escapeRegExp(this.filter.email)
-							},
-							"main.sponsor.name": {
-								$regex: escapeRegExp(this.filter.name),
-								$options: 'i'
-							},
-							"main.participants.school": {
-								$regex: escapeRegExp(this.filter.school),
-								$options: 'i'
-							}
+				let filter = {
+					account: {
+						admin: {
+							$in: this.filter.admin === null ? [true,false] : [this.filter.admin]
 						}
+					},
+					registration: {}
+				};
+				if(this.filter.paid !== null) {
+					filter.registration["paid"] = this.filter.paid;
+				}
+				if(this.filter.email.length) {
+					filter.registration["email"] = {
+						$regex: escapeRegExp(this.filter.email)
 					}
-				})
+				}
+				if(this.filter.name.length) {
+					filter.registration["temp.sponsor.name"] = {
+						$regex: escapeRegExp(this.filter.name),
+						$options: 'i'
+					}
+				}
+				if(this.filter.school.length) {
+					filter.registration["temp.participants.school"] = {
+						$regex: escapeRegExp(this.filter.school),
+						$options: 'i'
+					}
+				}
+				if(this.filter.confirmed !== null) {
+					filter.registration["main"] = this.filter.confirmed ? { $ne: null} : { $eq: null };
+				}
+				/*
+						paid: {
+							$in: this.filter.paid === null ? [true,false] : [this.filter.paid]
+						},
+						email: {
+							$regex: escapeRegExp(this.filter.email)
+						},
+						"main.sponsor.name": {
+							$regex: escapeRegExp(this.filter.name),
+							$options: 'i'
+						},
+						"main.participants.school": {
+							$regex: escapeRegExp(this.filter.school),
+							$options: 'i'
+						},
+						main: this.filter.confirmed ? 
+							{ $ne: null } : 
+							this.filter.confirmed === false ? 
+								{ $eq: null } : 
+								{ $exists: true }
+					}
+				};
+				*/
+				this.axios.post("/api/admin/records", { filter })
 				.then(response => {
 					if (response.data.status) {
 						//-- server error
@@ -170,13 +207,8 @@
 					else {
 						this.records = response.data.records;
 						if(this.records.length) {
-							let record = this.records.find(i => i.email === this.email);	
-							if(record) {
-								this.paid = record.paid;
-							}
-							else {
+							if(!this.records.find(i => i.email === this.email)) {
 								this.email = this.records[0].email;
-								this.paid = this.records[0].paid;	
 							}
 						}
 						else {
@@ -198,6 +230,9 @@
 <style lang="scss">
 	.border-left {
 		border-left: 2px solid #aaa;
+	}
+	hr {
+		border: 1px solid black;
 	}
 </style>
 
