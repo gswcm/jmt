@@ -76,7 +76,12 @@ const commonConfig = merge([
 			new ProgressPlugin(true),
 			new FriendlyErrorsWebpackPlugin(),
 			new webpack.NamedModulesPlugin()
-		]
+		],
+		resolve: {
+			alias: {
+				"@fortawesome/fontawesome-free-solid$": "@fortawesome/fontawesome-free-solid/shakable.es.js"
+			}
+		}
 	},
 	parts.loadFonts({
 		options: {

@@ -1,37 +1,40 @@
 <template>
-	<b-container>
+	<b-container v-if="isBefore.update">
 		<fieldset class="mt-3">
 			<legend>
 				Who are you?
 			</legend>
 			<div class="fieldset p-3 bg-light rounded">
-				<b-form-group 			
-					class="my-0"							
-					label-for="email"
-					:feedback="emailFeedback"
-					:state="emailState">
-					<b-row align-v="center">
-						<b-col cols="12" sm="auto">	
-							<label>Sponsor's e-mail</label>
-						</b-col>
-						<b-col col sm>
-							<b-input-group @keyup.enter="keyup">
-								<b-form-input 
-									id="email" 
-									type="text" 
-									:state="emailState"
-									:value="email"
-									@input="emailUpdated"
-									placeholder="just start typing...">
-								</b-form-input>
-							</b-input-group>							
-						</b-col>
-						<b-col v-if="emailIsValid" class="pl-0" cols="auto">
-							<b-btn variant="primary" @click="emailEval">Go!</b-btn>
-						</b-col>
-					</b-row>
-					<div slot="feedback" class="d-flex justify-content-end mt-2">{{emailFeedback}}</div>
-				</b-form-group>
+				<b-form @submit.prevent="emailEval">
+					<b-form-group 			
+						class="my-0"							
+						label-for="email"
+						:feedback="emailFeedback"
+						:state="emailState">
+						<b-row align-v="center">
+							<b-col cols="12" sm="auto">	
+								<label>Sponsor's e-mail</label>
+							</b-col>
+							<b-col col sm>
+								<b-input-group>
+									<b-form-input 
+										id="email" 
+										type="text" 
+										:state="emailState"
+										:value="email"
+										ref="email"
+										@input="emailUpdated"
+										placeholder="just start typing...">
+									</b-form-input>
+								</b-input-group>							
+							</b-col>
+							<b-col v-if="emailIsValid" class="pl-0" cols="auto">
+								<b-btn type="submit" variant="primary">Go!</b-btn>
+							</b-col>
+						</b-row>
+						<div slot="feedback" class="d-flex justify-content-end mt-2">{{emailFeedback}}</div>
+					</b-form-group>
+				</b-form>
 			</div>
 		</fieldset>
 		<!-- <div  class="bg-warning p-3 rounded my-3"> -->
@@ -62,11 +65,11 @@
 					Please have in mind that confirmation <strong>e-mail will expire in 1 day</strong> after creation.
 				</p>
 				<invisible-recaptcha 
-					:disabled="!registration.status"
 					id="recaptcha"
 					class="btn btn-primary"
 					theme="light"
 					:sitekey="reCAPTCHA_sitekey" 
+					:disabled="!registration.status"
 					:callback="submit">
 					{{!uuid.length ? 'Submit' : 'Update'}}
 				</invisible-recaptcha>
@@ -77,6 +80,7 @@
 
 <script>
 	import { debounce } from 'lodash';
+	import moment from 'moment';
 	import registration from './form/registration.vue';
 	import InvisibleRecaptcha from './misc/InvisibleRecaptcha.vue';
 	import { mapGetters } from 'vuex';
@@ -98,14 +102,42 @@
 			override: false,
 			reCAPTCHA_sitekey: ''
 		}),
+		beforeRouteEnter(to, from, next) {
+			next(vm => {
+				if(!vm.isBefore.update) {
+					vm.$router.replace('/');
+				}
+			});
+		},
 		created() {
 			this.emailUpdated(this.email);
+		},
+		mounted() {
+			this.$nextTick(() => {
+				if(this.$refs && this.$refs.email) {
+					this.$refs.email.focus();
+				}
+			});
 		},
 		computed: {
 			...mapGetters({
 				email: 'getEmail',
 				isAdmin: 'getIsAdmin',
+				eventDate: 'getEventDate',
 			}),
+			dates() {
+				let event = moment(this.eventDate).startOf('day');
+				let update = moment(event).subtract(2,'weeks');
+				return {
+					event, update
+				};
+			},
+			isBefore() {
+				let update = moment().isBefore(this.dates.update);
+				return { 
+					update
+				};
+			},
 			//-- email handlers
 			emailIsValid() {
 				return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,8}$/.test(this.email);
@@ -150,6 +182,7 @@
 					email = email.toLowerCase();
 					if(email !== this.email) {
 						this.$store.commit(types.SET_EMAIL, email);
+						this.$store.commit(types.SET_IS_ADMIN, false);
 						this.showForm = false;
 						this.uuid = '';	
 						this.override = false;
@@ -162,6 +195,11 @@
 				}
 			},
 			emailEval() {
+				//-- Shortcut for clicking Admin link -- second submission of the form
+				if(this.isAdmin) {
+					this.$router.push('/admin');
+					return;
+				}
 				//-- Defaults				
 				this.registration.value = {
 					sponsor: {

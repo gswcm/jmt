@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api", require("./routes/api/admin"));
 app.use("/api", require("./routes/api/start"));
 app.use("/api", require("./routes/api/email"));
+app.use("/api", require("./routes/api/maintenance"));
 app.use("/api", require("./routes/api/statistics"));
 app.use("/about", require("./routes/about"));
 app.use(

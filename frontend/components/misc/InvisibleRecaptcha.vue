@@ -1,5 +1,5 @@
 <template>
-	<button :class="computedClass" :type="type" :disabled="!loaded || disabled" :id="id" @click="click">
+	<button :class="computedClass" :type="type" :disabled="!loaded || runtime.disabled" :id="id" @click="click">
 		<slot></slot>
 	</button>
 </template>
@@ -51,8 +51,23 @@ export default {
 	data: function() {
 		return {
 			widgetId: false,
-			loaded: false
+			loaded: false,
+			runtime: {
+				disabled: false
+			}
 		};
+	},
+
+	created() {
+		this.$nextTick(() => {
+			this.runtime.disabled = this.disabled;
+		})
+	},
+
+	watch: {
+		disabled() {
+			this.runtime.disabled = this.disabled;
+		}
 	},
 
 	methods: {
@@ -87,11 +102,9 @@ export default {
 	computed: {
 		computedClass: function() {
 			var classArray = this.class ? this.class.split(" ") : [];
-
 			if (this.value) {
 				classArray.push("invisible-recaptcha");
 			}
-
 			return classArray;
 		}
 	},
@@ -104,7 +117,7 @@ export default {
 
 			document.head.appendChild(script);
 		} 
-		else this.render();
+		else this.render();		
 	}
 };
 </script>

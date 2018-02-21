@@ -43,13 +43,13 @@
 						<strong>Note</strong>: The registration cost per school team is calculated based on the payment date:
 						<ul>
 							<li>
-								If paid <strong>before January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
+								If paid <strong>before {{dates.payment.format('LL')}}</strong> the cost is <strong>$50</strong> regardless to the number of students (up to 10 per grade)
 							</li>
 							<li>
-								If paid <strong>after January 26<span class="superscript">th</span>, 2018</strong> the cost is <strong>$75</strong>
+								If paid <strong>after {{dates.payment.format('LL')}}</strong> the cost is <strong>$75</strong>
 							</li>
 						</ul>
-						The <strong>Total</strong> below shows both cases.
+						The <strong>Total</strong> amount below is adjusted to account today's date.
 					</p>
 				</div>
 			</transition>
@@ -120,6 +120,8 @@
 
 <script>
 import "vue-animate-transitions/dist/vue-animate-transitions.min.css";
+import moment from 'moment';
+import { mapGetters } from 'vuex';
 const { cloneDeep } = require("lodash");
 export default {
 	props: {
@@ -136,6 +138,19 @@ export default {
 		},
 		status: false,
 	}),
+	computed: {
+		...mapGetters({
+			eventDate: 'getEventDate',
+			isAdmin: 'getIsAdmin'
+		}),
+		dates() {
+			let event = moment(this.eventDate).startOf('day');
+			let payment = moment(event).subtract(1,'months');
+			return {
+				event, payment
+			};
+		},
+	},
 	created() {
 		this.runtime.value = cloneDeep(this.value);
 		Object.keys(this.runtime.value).forEach(key => {

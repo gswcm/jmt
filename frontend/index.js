@@ -12,14 +12,50 @@ import vueNoty from "vuejs-noty";
 import vueClipboard from "vue-clipboard2";
 import axios from "axios";
 import vueAxios from "vue-axios";
+import fontawesome from '@fortawesome/fontawesome';
+import fontAwesomeIcon from '@fortawesome/vue-fontawesome';
+import { 
+	faQuestionCircle,
+	faTrashAlt,
+	faSave,
+	faCheck,
+	faDownload,
+	faCopy,
+	faSyncAlt,
+   faTrash,
+   faEdit,
+   faPlus,
+   faDatabase,
+   faWrench,
+	faList,
+	faFilter,
+   faPrint
+} from '@fortawesome/fontawesome-free-solid';
 import bootstrapVue from "bootstrap-vue";
 import store from "./store";
 import root from "./components/root.vue";
-// import "open-iconic/font/css/open-iconic-bootstrap.css";
-import "font-awesome/css/font-awesome.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "vuejs-noty/dist/vuejs-noty.css";
+
+// Font Awesome 5 configurations
+fontawesome.library.add(
+	faQuestionCircle,
+	faTrashAlt,
+	faTrash,
+	faSave,
+	faCheck,
+	faDownload,
+	faCopy,
+	faSyncAlt,
+	faEdit,
+	faPlus,
+	faDatabase,
+	faWrench,
+	faList,
+	faFilter,
+	faPrint
+);
 
 const router = new vueRouter({
 	routes: [
@@ -41,7 +77,7 @@ const router = new vueRouter({
 		{
 			path: "/admin",
 			component: () =>
-				import(/* webpackChunkName: "admin" */ "./components/admin.vue")
+				import(/* webpackChunkName: "admin" */ "./components/admin/index.vue")
 		},
 		{
 			path: "*",
@@ -51,6 +87,7 @@ const router = new vueRouter({
 	],
 	mode: "history"
 });
+vue.component('font-awesome-icon', fontAwesomeIcon);
 vue.use(bootstrapVue);
 vue.use(vueRouter);
 vue.use(vueClipboard);
