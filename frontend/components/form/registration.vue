@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<div class="bg-light p-3 text-info border-info border" v-if="options.debug">
-			<pre>{{JSON.stringify(runtime,null,3)}}</pre>	
-			<pre>{{JSON.stringify(status,null,3)}}</pre>	
+			<pre>{{JSON.stringify(runtime,null,3)}}</pre>
+			<pre>{{JSON.stringify(status,null,3)}}</pre>
 		</div>
 		<sponsor
 			:value="runtime.value.sponsor"
@@ -38,7 +38,7 @@
 		components: {
 			sponsor, misc, participants
 		},
-		props: {			
+		props: {
 			value: Object,
 			options: {
 				type: Object,
@@ -92,7 +92,7 @@
 			updateTotal() {
 				let base = this.runtime.value;
 				let tshirts = base.misc.tshirts.reduce((a,i) => a + parseInt(i.qty), 0) * 10;
-				let meals = parseInt(base.misc.meals) * 7.5;
+				let meals = parseInt(base.misc.meals) * 8;
 				if(this.status) {
 					if(base.participants.registration === "school") {
 						let arr = [50,75].map(i => {

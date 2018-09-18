@@ -10,19 +10,19 @@
 					<h5 class="text-info">T-Shirts <small>($10 each)</small> </h5>
 				</b-col>
 				<b-col cols="auto" v-show="!ro">
-					<b-btn 
+					<b-btn
 						variant="outline-info"
 						@click="addTShirt">
 						Add more...
 					</b-btn>
 				</b-col>
 			</b-row>
-			<b-form-group 	
+			<b-form-group
 				v-for="(tshirt,index) in runtime.value.tshirts"
 				:key="`tshirt_${index}`"
-				v-show="showTShirts">						
+				v-show="showTShirts">
 				<b-row align-v="center">
-					<b-col col sm="auto">	
+					<b-col col sm="auto">
 						<label>Size/Qty</label>
 					</b-col>
 					<b-col col sm>
@@ -38,21 +38,21 @@
 							<option value="L">L</option>
 							<option value="XL">XL</option>
 							<option value="XXL">XXL</option>
-						</b-select>		
+						</b-select>
 					</b-col>
 					<b-col cols="2">
-						<b-form-input 
+						<b-form-input
 							:disabled="ro"
-							type="number" 
+							type="number"
 							min="0"
 							:value="tshirt.qty"
 							@input="update(['tshirts',`${index}`],'qty',$event)"
 							:state="tshirt.qty > 0 ? null : false">
-						</b-form-input>	
+						</b-form-input>
 					</b-col>
 					<b-col col sm="auto" v-show="!ro">
-						<b-btn 
-							variant="outline-secondary" 
+						<b-btn
+							variant="outline-secondary"
 							@click="removeTShirt(index)">
 							Remove
 						</b-btn>
@@ -61,25 +61,25 @@
 			</b-form-group>
 			<hr class="my-4" v-show="showTShirts && showMeals">
 			<!-- Meals -->
-			<b-row align-h="between" align-v="center"class="my-3" v-show="showMeals">
+			<b-row align-h="between" align-v="center" class="my-3" v-show="showMeals">
 				<b-col cols="auto">
-					<h5 class="text-info">Meals <small>($7.5 each)</small></h5>
+					<h5 class="text-info">Meals <small>($8 each)</small></h5>
 				</b-col>
 			</b-row>
-			<b-form-group v-show="showMeals"> 	
+			<b-form-group v-show="showMeals">
 				<b-row align-v="center">
-					<b-col cols="auto" sm="auto">	
+					<b-col cols="auto" sm="auto">
 						<label>Number of meal tickets</label>
 					</b-col>
 					<b-col col sm="">
-						<b-form-input 
+						<b-form-input
 							:disabled="ro"
-							type="number" 
+							type="number"
 							min="0"
 							:value="runtime.value.meals"
 							:state="state(runtime.status.meals)"
 							@input="update([],'meals',$event)">
-						</b-form-input>	
+						</b-form-input>
 					</b-col>
 				</b-row>
 			</b-form-group>
@@ -90,7 +90,7 @@
 <script>
 	const { cloneDeep } = require('lodash');
 	export default {
-		props: {			
+		props: {
 			value: Object,
 			ro: {
 				type: Boolean,
@@ -126,7 +126,7 @@
 		},
 		methods: {
 			removeTShirt(index) {
-				this.runtime.value.tshirts.splice(index,1); 
+				this.runtime.value.tshirts.splice(index,1);
 				this.runtime.status.tshirts = this.validate('tshirts');
 				this.update();
 			},
@@ -140,7 +140,7 @@
 			},
 			update(path = [], key, value) {
 				let query = [...path, key][0];
-				if(query) { 
+				if(query) {
 					path.reduce((target,key) => target[key],this.runtime.value)[key] = value;
 					this.runtime.status[query] = this.validate(query)
 				}
@@ -154,7 +154,7 @@
 				let subj = this.runtime.value[query];
 				switch (query) {
 					case "meals":
-						return /[0-9]+/.test(subj) && parseInt(subj) >= 0; 
+						return /[0-9]+/.test(subj) && parseInt(subj) >= 0;
 					case "tshirts":
 						return subj.reduce((a,i) => a && (i.size !== null) && (i.qty > 0), true);
 				}
